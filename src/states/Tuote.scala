@@ -1,13 +1,15 @@
 package states
 
-abstract class Tuote(val arvo: Int, var määrä: Int) {
+
+// Tuotteen määrä on mutable!
+abstract class Tuote(val arvo: Int, private var koko: Int) {
 
   private def tyypitys[t](r: t) = r
   
   
   def lisää(tuote: Tuote) = {
     if (tyypitys(this) == tyypitys(tuote)) {
-    this.määrä += tuote.määrä
+    this.koko += tuote.määrä
     true
     }
     else false
@@ -25,16 +27,25 @@ abstract class Tuote(val arvo: Int, var määrä: Int) {
   def kuluta(tuote: Tuote): Boolean = {
       val saatavuus = riittääkö(tuote)
       if (saatavuus) {
-        this.määrä -= tuote.määrä
+        this.koko -= tuote.määrä
         true
       }
       else false
   }
   
+  def hinta = määrä*arvo
   
+  def määrä: Int = this.koko
 }
 
+
+
+// Alaluokat
+
 class Raha(määrä: Int = 0) extends Tuote(1, määrä)
+
+
+class Vilja(määrä: Int = 0) extends Tuote(2, määrä)
 
 
 

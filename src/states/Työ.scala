@@ -1,12 +1,38 @@
 package states
 
+import util.control.Breaks._
 
-class Työ(val kulutus: Vector[Tuote] = Vector(), val tuotto: Vector[Tuote] = Vector()) {
+abstract class Työ(val kulutus: Vector[Tuote] = Vector(), val tuotto: Vector[Tuote] = Vector(), val koko: Int = 0) {
+
   
+ 
+  
+  // Palauttaa ryhmän tyytyväisyyden
+  def toimi(ahkeruus: Double, kassa: Kassa, määrä: Int): Int = {
+    val indeksi = määrä*ahkeruus.toInt
+    var tyytyväisyys = 0
+    for (i <- 1 to indeksi) {
+      if (kassa.kuluta(kulutus)) {
+        kassa.lisää(tuotto)
+        tyytyväisyys -= 1
+      }
+      else break
+    }
+    tyytyväisyys
+  }
+  
+  def toimi(ahkeruus: Double, kassa: Kassa): Int = toimi(ahkeruus, kassa, koko)
 }
 
 
-class Viljely extends Työ
+/* Alaluokat. Saman alaluokan edustajilla on syytä olla sama kulutus sekä tuotto. 
+ * Työryhmä ei muuten välttämättä jaa työtä tasaisesti.
+ */
+
+class Viljely(koko: Int) extends Työ(tuotto = Vector(new Vilja(10)), koko = koko)
 
 
-class Nollatyö extends Työ
+class Nollatyö extends Työ {
+  // Palauttaa negatiivista tyytyväisyyttä.
+  def toimi(args: Any*) = -koko*2
+}

@@ -1,10 +1,9 @@
 package states
 
-import scala.collection.mutable.Map
 
 
 
-class Laitos(val hinta: Vector[Tuote], val työt: Map[Työ,Int]) {
+class Laitos(val hinta: Vector[Tuote], val työt: Vector[Työ]) {
   
   private var omistaja: Option[String] = None
   
@@ -23,5 +22,8 @@ class Laitos(val hinta: Vector[Tuote], val työt: Map[Työ,Int]) {
 }
 
 
+// Alaluokat
+
+
 // Sekä hinta että tuottavuus määritetään pelikohtaisesti
-class Pelto(hinta: Vector[Tuote], tuottavuus: Int) extends Laitos(hinta, Map(new Viljely -> tuottavuus))
+class Pelto(hinta: Vector[Tuote], koko: Int) extends Laitos(hinta, Vector(new Viljely(koko)))

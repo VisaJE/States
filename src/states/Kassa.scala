@@ -28,6 +28,7 @@ class Kassa(val tuotteet: Buffer[Tuote], val laitokset: Buffer[Laitos]) {
   }
   
   
+  // Tuotteet saavat esiintyä vain kerran listassa.
   def riittääkö(tuotteet: Vector[Tuote]): Boolean = {
     tuotteet.forall(this.riittääkö(_))
   }
@@ -45,4 +46,8 @@ class Kassa(val tuotteet: Buffer[Tuote], val laitokset: Buffer[Laitos]) {
       true
     }
   }
+  
+  
+  
+  
 }
