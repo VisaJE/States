@@ -5,9 +5,14 @@ class Kassa(val tuotteet: Buffer[Tuote], val laitokset: Buffer[Laitos]) {
   
   
   def lisää(tuote: Tuote): Unit = {
-     if (!tuotteet.exists(_.lisää(tuote))) {
-       tuotteet += tuote
-     }
+     val indeksi = löytyykö(tuote)
+     if (indeksi > -1) tuotteet(indeksi) = tuotteet(indeksi).lisää(tuote)
+     else tuotteet +=  tuote
+  }
+  
+  
+  def löytyykö(t: Tuote) = {
+    tuotteet.map(_.tyyppiVertaus(t)).indexOf(true)
   }
   
   
@@ -35,13 +40,8 @@ class Kassa(val tuotteet: Buffer[Tuote], val laitokset: Buffer[Laitos]) {
   
   
   private def kuluta(tuote: Tuote): Unit = {
-    if (!tuotteet.exists((x: Tuote) => 
-      try {
-      x.kuluta(tuote)
-      } catch {
-      case e: VääräTuoteVirhe => false
-      }
-    )) throw KassaVirhe("Kulutus ristiriita")
+      val indeksi = löytyykö(tuote)
+      tuotteet(indeksi) = tuotteet(indeksi).kuluta(tuote) 
   }
   
   

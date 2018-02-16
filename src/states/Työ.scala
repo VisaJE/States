@@ -10,7 +10,7 @@ abstract class Työ(val kulutus: Vector[Tuote] = Vector(), val tuotto: Vector[Tu
   
   // Palauttaa ryhmän tyytyväisyyden
   def toimi(ahkeruus: Double, kassa: Kassa, määrä: Int): Int = {
-    val indeksi = määrä*ahkeruus.toInt
+    val indeksi = (määrä*ahkeruus).toInt
     var tyytyväisyys = 0
     for (i <- 1 to indeksi) {
       if (kassa.kuluta(kulutus)) {
@@ -30,7 +30,7 @@ abstract class Työ(val kulutus: Vector[Tuote] = Vector(), val tuotto: Vector[Tu
  * Työryhmä ei muuten välttämättä jaa työtä tasaisesti.
  */
 
-class Viljely(koko: Int) extends Työ(tuotto = Vector(new Vilja(10)), koko = koko) {
+class Viljely(koko: Int) extends Työ(tuotto = Vector(new Vilja(4)), koko = koko) {
   
     def tyyppiVertaus(a: Työ) = {
     a match {
@@ -43,9 +43,16 @@ class Viljely(koko: Int) extends Työ(tuotto = Vector(new Vilja(10)), koko = kok
 }
 
 
-class Nollatyö extends Työ {
+class Nollatyö(koko: Int) extends Työ(koko = koko) {
 
     def tyyppiVertaus(a: Työ) = false
   // Palauttaa negatiivista tyytyväisyyttä.
-  def toimi(args: Any*) = -koko*2
+  override def toimi(ahkeruus: Double, kassa: Kassa) = {
+      -2*koko
+    }
+  override def toimi(ahkeruus: Double, kassa: Kassa, määrä: Int) = {
+     toimi(ahkeruus, kassa)
+  }
+  
+  
 }

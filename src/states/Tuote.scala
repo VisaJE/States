@@ -1,22 +1,22 @@
 package states
 
 
-// Tuotteen määrä on mutable!
-abstract class Tuote(val arvo: Int, private var koko: Int) {
+abstract class Tuote(val arvo: Int, val määrä: Int) {
 
-  
+      
+      
   // Määriteltävä alaluokassa
   def tyyppiVertaus(a: Tuote): Boolean
   override def toString: String
+  def copy(m: Int): Tuote
   
   
-  def lisää(tuote: Tuote) = {
+  def lisää(tuote: Tuote): Tuote= {
     if (this.tyyppiVertaus(tuote)) {
-    this.koko += tuote.määrä
-    true
+    this.copy(määrä + tuote.määrä)
     }
     else {
-      false
+      this
     }
   }
   
@@ -30,18 +30,16 @@ abstract class Tuote(val arvo: Int, private var koko: Int) {
   }
   
   
-  def kuluta(tuote: Tuote): Boolean = {
+  def kuluta(tuote: Tuote): Tuote = {
       val saatavuus = riittääkö(tuote)
       if (saatavuus) {
-        this.koko -= tuote.määrä
-        true
+       this.copy(määrä - tuote.määrä)
       }
-      else false
+      else this
   }
   
   def hinta = määrä*arvo
   
-  def määrä: Int = this.koko
   
 
 }
@@ -59,20 +57,30 @@ class Raha(m: Int = 0) extends Tuote(1, m) {
       case _ => false
     }
   }
+ 
+  
+  def copy(m: Int) = Raha(m)
+  
   
   override def toString = {
     määrä + "€"
   }
   
+  
 }
 
 // Rahan käsittelyn helpottamiseksi.
 object Raha {
+  
   def apply(määrä: Int) = new Raha(määrä)
+  
 }
 
 
 class Vilja(m: Int = 0) extends Tuote(2, m) {
+  
+  
+  def copy(m: Int) = new Vilja(m)
   
   
   def tyyppiVertaus(a: Tuote) = {
@@ -82,9 +90,11 @@ class Vilja(m: Int = 0) extends Tuote(2, m) {
     }
   }
   
+  
   override def toString = {
     "Viljaa " + määrä + " leiviskää"
   }
+  
   
 }
 

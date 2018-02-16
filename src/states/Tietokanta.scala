@@ -1,0 +1,74 @@
+package states
+
+import scala.collection.mutable.Buffer
+import scala.math._
+
+class Tietokanta(kassa: Kassa, kartta: Kartta) {
+  var populaatio = 0
+  var tyytyväisyys = 0
+  
+  // Muodostaa työryhmän.
+  private def teeTyöryhmä(koko: Int, ahkeruus: Double, työ: Vector[Työ]) = {
+    if (populaatio > 0) {
+    tyytyväisyys = ((new Työryhmä(ahkeruus, työ, koko, kassa)).tyytyväisyys*10.0 / populaatio + tyytyväisyys).toInt
+    }
+    
+  }
+  
+  
+  // Palauttaa työn suurimman koon.
+  private def vapaatPaikat(työ: Vector[Työ]) = työ.foldLeft(0)(_ + _.koko)
+  
+  
+  private def paikkaLista(t: Työ): Vector[Työ] = {
+    kassa.työLista.filter(_(0).tyyppiVertaus(t)).flatten
+  }
+  
+  
+  private def osuus(a: Double): Int = (a*populaatio).toInt
+  private def osuus(a: Double, b: Int) = (a*b).toInt
+  
+  // Skaalaa halutut arvot siten, että ne summautuvat ykköseksi.
+  private def suhteuta(v: Array[(Boolean, Double)]) = {
+    val nyt = v.foldLeft(0.0)( (a: Double, x: (Boolean, Double)) => if (x._1) a + x._2 else a)
+    val kerroin = 1.0/nyt
+    v.map((x: (Boolean, Double)) => if (x._1) (true, kerroin*x._2) else (true, x._2))
+  }
+ 
+  
+  /* Määrää työt annettujen osuuksien perusteella. Ei jätä ketään työttömäksi, elleivät työpaikat lopu kesken.
+   * Mikäli loppuvat, määrää lopun kansan nollatyöhön. Pyrkii noudattamaan annettuja osuuksia muiden alojen
+   * kohdalla silloinkin, jos vain osalta aloista loppuu työpaikat. Osuudet skaalataan aluksi ykköseen.
+   * Parametrissä on annettava jokainen saatavilla oleva työ nollatyötä lukuunottamatta. Järjestyksen on oltava
+   * sama kuin kassan työlistassa.
+   */
+  def työllistä(v: Vector[Double], ahk: Vector[Double]) = {
+    val työt: Vector[Vector[Työ]] = kassa.työLista
+    if (työt.size != v.size || v.size != ahk.size) throw PuutteellinenTyölista("Listojen koot eivät täsmää")
+    var vapaana  = populaatio
+    var kokoLista = Array.ofDim[Int](v.size)
+    // Pari on true, mikäli arvo saa vielä muuttua.
+    var osuusLista = v.map((true, _)).toArray
+    while (vapaana > 0 && osuusLista.forall(_._1)) {
+      osuusLista = suhteuta(osuusLista)
+      kokoLista = osuusLista.map((x: (Boolean, Double)) => osuus(x._2))
+      for (i <- 0 until osuusLista.size) {
+        val vapaat = vapaatPaikat(työt(i))
+        val ehdotus = kokoLista(i)
+        if (vapaat <= ehdotus) {
+          osuusLista(i) = (false, osuusLista(i)._2)
+          kokoLista(i) = vapaat
+        }
+      }
+      vapaana = populaatio - kokoLista.reduceLeft(_ + _)   
+    }
+    for (i <- 0 until ahk.size) {
+      teeTyöryhmä(kokoLista(i), ahk(i), työt(i))
+    }
+    if (vapaana > 0) {
+      teeTyöryhmä(vapaana, 1.0, Vector(new Nollatyö(vapaana)))
+    }
+  }
+  
+  
+}
