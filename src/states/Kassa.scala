@@ -35,7 +35,13 @@ class Kassa(val tuotteet: Buffer[Tuote], val laitokset: Buffer[Laitos]) {
   
   
   private def kuluta(tuote: Tuote): Unit = {
-    if (!tuotteet.exists(_.kuluta(tuote))) throw KassaVirhe("Kulutus ristiriita")
+    if (!tuotteet.exists((x: Tuote) => 
+      try {
+      x.kuluta(tuote)
+      } catch {
+      case e: VääräTuoteVirhe => false
+      }
+    )) throw KassaVirhe("Kulutus ristiriita")
   }
   
   
@@ -48,6 +54,37 @@ class Kassa(val tuotteet: Buffer[Tuote], val laitokset: Buffer[Laitos]) {
   }
   
   
+  // Lajittelee laitosten työt vektoreihin.
+  def työLista: Vector[Vector[Työ]] = {
+    val työt = laitokset.map(_.työt).flatten
+    var result: Vector[Vector[Työ]] = Vector()
+    while (työt.size != 0) {
+      val eka = työt.head
+      var tämäTyö = Vector(eka)
+      työt -= eka
+      for (i <- työt) {
+        if (i.tyyppiVertaus(eka)) {
+          tämäTyö = tämäTyö :+ i
+          työt -= i
+        }
+      }
+      result = result :+ tämäTyö
+    }
+    result
+  }
+  
+  
+  override def toString = {
+    var text = "Tuotteet:\n"
+    for (i <- tuotteet) {
+      text += i.toString + "\n"
+    }
+    text += "Laitokset:\n"
+    for (i <- laitokset) {
+      text += i.toString + "\n"
+    }
+    text
+  }
   
   
 }

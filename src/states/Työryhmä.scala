@@ -1,12 +1,12 @@
 package states
 
-class Työryhmä(ahkeruus: Int, työ: Vector[Työ], koko: Int, kassa: Kassa) {
+class Työryhmä(ahkeruus: Double, työ: Vector[Työ], koko: Int, kassa: Kassa) {
   
   
   /* Kutsuu lähtökohtaisesti jokaisen työn toimi-metodia. 
    * Jos työryhmän koko ei riitä, listan lopusta töitä jää tekemättä.
    */
-  private def toimi() = {
+  private def toimi(): Int = {
     var toimijat = koko
     var tyytyväisyys = 0
     työ.foreach(
@@ -19,6 +19,7 @@ class Työryhmä(ahkeruus: Int, työ: Vector[Työ], koko: Int, kassa: Kassa) {
           toimijat = 0
         }
         )
+        tyytyväisyys
   }
   
   

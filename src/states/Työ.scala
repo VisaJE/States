@@ -5,6 +5,7 @@ import util.control.Breaks._
 abstract class Työ(val kulutus: Vector[Tuote] = Vector(), val tuotto: Vector[Tuote] = Vector(), val koko: Int = 0) {
 
   
+  def tyyppiVertaus(a: Työ): Boolean
  
   
   // Palauttaa ryhmän tyytyväisyyden
@@ -29,10 +30,22 @@ abstract class Työ(val kulutus: Vector[Tuote] = Vector(), val tuotto: Vector[Tu
  * Työryhmä ei muuten välttämättä jaa työtä tasaisesti.
  */
 
-class Viljely(koko: Int) extends Työ(tuotto = Vector(new Vilja(10)), koko = koko)
+class Viljely(koko: Int) extends Työ(tuotto = Vector(new Vilja(10)), koko = koko) {
+  
+    def tyyppiVertaus(a: Työ) = {
+    a match {
+      case a: Viljely => true
+      case _ => false
+    }
+  }
+    
+    
+}
 
 
 class Nollatyö extends Työ {
+
+    def tyyppiVertaus(a: Työ) = false
   // Palauttaa negatiivista tyytyväisyyttä.
   def toimi(args: Any*) = -koko*2
 }
