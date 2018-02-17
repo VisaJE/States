@@ -19,7 +19,6 @@ class Työryhmä(ahkeruus: Double, työ: Vector[Työ], koko: Int, kassa: Kassa) 
           toimijat = 0
         }
         )
-        println(tyytyväisyys)
         tyytyväisyys
   }
   

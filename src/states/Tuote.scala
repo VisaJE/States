@@ -3,7 +3,8 @@ package states
 
 abstract class Tuote(val arvo: Int, val määrä: Int) {
 
-      
+  // Kertoo, kuinka paljon tuotetta tavitaan henkilöä kohden.
+  val tarve: Int
       
   // Määriteltävä alaluokassa
   def tyyppiVertaus(a: Tuote): Boolean
@@ -41,7 +42,24 @@ abstract class Tuote(val arvo: Int, val määrä: Int) {
   def hinta = määrä*arvo
   
   
-
+  def tarveFunktio(populaatio: Int): Double
+  
+  
+  def käytä(populaatio: Int) = {
+    var jää = määrä - tarve*populaatio
+    if (jää < 0) jää = 0
+    this.copy(jää)
+  }
+  
+  
+  def myy(myytävä: Int): (Tuote, Option[Int]) = {
+    if (myytävä <= määrä) {
+      (this.copy(määrä - myytävä), Some(myytävä*arvo))
+    }
+    else {
+      (this, None)
+    }
+  }
 }
 
 
@@ -50,6 +68,8 @@ abstract class Tuote(val arvo: Int, val määrä: Int) {
 
 class Raha(m: Int = 0) extends Tuote(1, m) {
   
+  val tarve = 0
+  private val tyytyväisyysKerroin = 0.2
   
   def tyyppiVertaus(a: Tuote) = {
     a match {
@@ -58,6 +78,11 @@ class Raha(m: Int = 0) extends Tuote(1, m) {
     }
   }
  
+  
+  def tarveFunktio(pop: Int) = {
+    määrä*1.0 / pop * tyytyväisyysKerroin
+  }
+  
   
   def copy(m: Int) = Raha(m)
   
@@ -71,13 +96,21 @@ class Raha(m: Int = 0) extends Tuote(1, m) {
 
 // Rahan käsittelyn helpottamiseksi.
 object Raha {
-  
   def apply(määrä: Int) = new Raha(määrä)
-  
 }
 
 
 class Vilja(m: Int = 0) extends Tuote(2, m) {
+  
+  val tarve = 2
+  private val tyytyväisyysKerroin = 1.0
+  
+  
+  def tarveFunktio(pop: Int) = {
+    val arvo = määrä*1.0 / pop - tarve
+    if (arvo <= 0) arvo
+    else arvo*tyytyväisyysKerroin
+  }
   
   
   def copy(m: Int) = new Vilja(m)

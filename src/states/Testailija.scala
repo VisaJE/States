@@ -20,19 +20,29 @@ object Testailija extends App {
   //println(kassa)
   
   // Testataan työjärjestelmää
-  val ryhmä = new Työryhmä(1.4, laitos.työt, 3, kassa)
-  println(kassa + " Tyytyväisyys: " + ryhmä.tyytyväisyys)
-  println(kassa.työLista)
+  //val ryhmä = new Työryhmä(1.4, laitos.työt, 3, kassa)
+  //println(kassa + " Tyytyväisyys: " + ryhmä.tyytyväisyys)
+  //println(kassa.työLista)
   
   // Testataan tietokantaa
   val kartta = new Kartta(Buffer(laitos, kaivos, laitos2))
   val kanta = new Tietokanta(kassa, kartta)
-  kanta.työllistä(Vector(1.0), Vector(1.0))
-  println(kassa)
-  println(kanta.tyytyväisyys)
-  kanta.populaatio += 9
-  kanta.työllistä(Vector(1.0), Vector(0.8))
-  println(kassa)
-  println(kanta.tyytyväisyys)
-
+  
+  kanta.populaatio = 1
+  
+  for (i <- 0 to 10) {
+    kanta.vuoro(Vector(1.0), Vector(0.8))
+    println(kassa)
+    println("tyyt " + kanta.tyytyväisyys)
+    println("pop " + kanta.populaatio + "\n")
+  }
+  
+  
+  
+  
+  
+  
+  
+  
+  
 }

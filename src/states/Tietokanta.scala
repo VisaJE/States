@@ -1,11 +1,26 @@
 package states
 
-import scala.collection.mutable.Buffer
+
 import scala.math._
 
 class Tietokanta(kassa: Kassa, kartta: Kartta) {
+  
+  
+  val tappoIndeksi = 0.5
+  val resurssiTyytyväisyysKerroin = 1.0
+  val syntyvyysKerroin = 0.4
   var populaatio = 0
   var tyytyväisyys = 0
+  
+  
+  def vuoro(työOsuus: Vector[Double], ahkeruus: Vector[Double]) = {
+    työllistä(työOsuus, ahkeruus)
+    tarveMittaus()
+    kuluta()
+    syntyvyys()
+  }
+  
+  
   
   // Muodostaa työryhmän.
   private def teeTyöryhmä(koko: Int, ahkeruus: Double, työ: Vector[Työ]) = {
@@ -70,5 +85,33 @@ class Tietokanta(kassa: Kassa, kartta: Kartta) {
     }
   }
   
+  
+
+  def tarveMittaus() = {
+    for (tuote <- kassa.tuotteet) {
+      if (populaatio > 0) {
+        val arvo = tuote.tarveFunktio(populaatio)
+        if (arvo <= 0) {
+          populaatio += (arvo*populaatio*tappoIndeksi).toInt
+        }
+        else {
+          tyytyväisyys += (arvo*resurssiTyytyväisyysKerroin).toInt
+        }
+      }
+    }
+  }
+  
+  
+  def kuluta() = {
+    for (i <- 0 until kassa.tuotteet.size) {
+      kassa.tuotteet(i) = kassa.tuotteet(i).käytä(populaatio)
+    }
+  }
+  
+  
+  def syntyvyys() = {
+    populaatio += (syntyvyysKerroin * tyytyväisyys).toInt
+    if (populaatio < 0) populaatio = 0
+  }
   
 }

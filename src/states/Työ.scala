@@ -30,7 +30,7 @@ abstract class Työ(val kulutus: Vector[Tuote] = Vector(), val tuotto: Vector[Tu
  * Työryhmä ei muuten välttämättä jaa työtä tasaisesti.
  */
 
-class Viljely(koko: Int) extends Työ(tuotto = Vector(new Vilja(4)), koko = koko) {
+class Viljely(koko: Int) extends Työ(tuotto = Vector(new Vilja(6)), koko = koko) {
   
     def tyyppiVertaus(a: Työ) = {
     a match {
@@ -45,10 +45,12 @@ class Viljely(koko: Int) extends Työ(tuotto = Vector(new Vilja(4)), koko = koko
 
 class Nollatyö(koko: Int) extends Työ(koko = koko) {
 
-    def tyyppiVertaus(a: Työ) = false
+  val tyytyväisyysKerroin = -2
+  
+  def tyyppiVertaus(a: Työ) = false
   // Palauttaa negatiivista tyytyväisyyttä.
   override def toimi(ahkeruus: Double, kassa: Kassa) = {
-      -2*koko
+      tyytyväisyysKerroin*koko
     }
   override def toimi(ahkeruus: Double, kassa: Kassa, määrä: Int) = {
      toimi(ahkeruus, kassa)
