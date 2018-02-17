@@ -3,19 +3,18 @@ import scala.collection.mutable.Buffer
 
 object Testailija extends App {
   // Luodaan kassa ja sijoitetaan juttuja.
-  val alkuVilja = new Vilja(0)
   val alkuRaha = Raha(100)
-  val laitos = new Pelto(Vector(Raha(10)), 10)
-  val kaivos = new Kaivos(Vector(Raha(100)), 20)
-  val laitos2 = new Pelto(Vector(Raha(50)), 6)
-  val kassa = new Kassa(Buffer(alkuRaha), Buffer(laitos))
+  val laitos = new Pelto(Vector(Raha(10)), 10, 6)
+  val kaivos = new Kaivos(Vector(Raha(100)), 20, 10)
+  val laitos2 = new Pelto(Vector(Raha(50)), 6, 15)
+  val kassa = new Kassa(Buffer(alkuRaha), Buffer())
 //  println(kassa + "\n")
 //  kassa.lisää(new Vilja(10))
  // kassa.lisää(Raha(10))
  // kassa.kuluta(Vector(Raha(10)))
   //println(kassa + "\n")
  // kassa.laitokset += kaivos
-  kassa.laitokset += laitos2
+ // kassa.laitokset += laitos2
   //println(kassa.kuluta(Vector(Raha(100))))
   //println(kassa)
   
@@ -26,9 +25,13 @@ object Testailija extends App {
   
   // Testataan tietokantaa
   val kartta = new Kartta(Buffer(laitos, kaivos, laitos2))
+  kartta.lisää(Vector(laitos, laitos2, kaivos))
   val kanta = new Tietokanta(kassa, kartta)
   
   kanta.populaatio = 1
+  kanta.osta(laitos)
+  kanta.osta(laitos2)
+  kanta.osta(kaivos)
   
   for (i <- 0 to 10) {
     kanta.vuoro(Vector(1.0), Vector(0.8))

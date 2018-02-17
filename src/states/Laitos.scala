@@ -7,7 +7,7 @@ abstract class Laitos(val hinta: Vector[Tuote], val työt: Vector[Työ]) {
   
   override def toString: String
   
-  private var omistaja: Option[String] = None
+  private var omistaja: Option[Tietokanta] = None
   
   
   def onOmistettu = {
@@ -16,7 +16,7 @@ abstract class Laitos(val hinta: Vector[Tuote], val työt: Vector[Työ]) {
   }
   
   
-  def osta(ostaja: String) = if (this.onOmistettu) false
+  def osta(ostaja: Tietokanta) = if (this.onOmistettu) false
   else {
     omistaja = Some(ostaja)
     true
@@ -28,11 +28,11 @@ abstract class Laitos(val hinta: Vector[Tuote], val työt: Vector[Työ]) {
 
 
 // Sekä hinta että tuottavuus määritetään pelikohtaisesti
-class Pelto(hinta: Vector[Tuote], koko: Int) extends Laitos(hinta, Vector(new Viljely(koko))) {
+class Pelto(hinta: Vector[Tuote], koko: Int, teho: Int) extends Laitos(hinta, Vector(new Viljely(koko, teho))) {
   override def toString:String = koko + " asukkaan maatila"
 }
 
 
-class Kaivos(hinta: Vector[Tuote], koko: Int) extends Laitos(hinta, Vector(new Nollatyö(100))) {
+class Kaivos(hinta: Vector[Tuote], koko: Int, teho: Int) extends Laitos(hinta, Vector(new Kaivostyö(koko, teho))) {
   override def toString = "Kaivos ja " + koko + " hakkua."
 }

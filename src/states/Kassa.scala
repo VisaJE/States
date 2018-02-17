@@ -1,7 +1,7 @@
 package states
 import scala.collection.mutable.Buffer
 
-class Kassa(val tuotteet: Buffer[Tuote], val laitokset: Buffer[Laitos]) {
+class Kassa(val tuotteet: Buffer[Tuote] = Buffer(), val laitokset: Buffer[Laitos] = Buffer()) {
   
   
   def lisää(tuote: Tuote): Unit = {

@@ -3,14 +3,13 @@ package states
 
 import scala.math._
 
-class Tietokanta(kassa: Kassa, kartta: Kartta) {
+class Tietokanta(kassa: Kassa, kartta: Kartta, var populaatio: Int = 0) {
   
   
   val tappoIndeksi = 0.5
   val resurssiTyytyväisyysKerroin = 1.0
   val syntyvyysKerroin = 0.4
-  var populaatio = 0
-  var tyytyväisyys = 0
+  var tyytyväisyys: Int = 0
   
   
   def vuoro(työOsuus: Vector[Double], ahkeruus: Vector[Double]) = {
@@ -18,6 +17,18 @@ class Tietokanta(kassa: Kassa, kartta: Kartta) {
     tarveMittaus()
     kuluta()
     syntyvyys()
+  }
+  
+  
+  def osta(laitos: Laitos): Boolean = {
+    if (kassa.kuluta(laitos.hinta)) {
+      if (laitos.osta(this)) {
+        kassa.laitokset += laitos
+        true
+      }
+      else false
+    }
+    else false
   }
   
   

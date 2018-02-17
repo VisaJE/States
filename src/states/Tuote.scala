@@ -132,7 +132,32 @@ class Vilja(m: Int = 0) extends Tuote(2, m) {
 }
 
 
-
+class Rauta(m: Int = 0) extends Tuote(5, m) {
+ 
+  val tarve = 0
+  private val tyytyväisyysKerroin = 0.1
+  
+  
+  def tarveFunktio(pop: Int) = {
+    tyytyväisyysKerroin * pop
+  }
+  
+  
+  def tyyppiVertaus(a: Tuote) = {
+    a match {
+      case a: Vilja => true
+      case _ => false
+    }
+  }
+ 
+  
+  def copy(m: Int) = new Rauta(m)  
+  
+  
+  override def toString = {
+    "Rautaa " + määrä + " leiviskää"
+  }  
+}
 
 
 
