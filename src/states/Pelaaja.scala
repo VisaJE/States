@@ -12,13 +12,15 @@ abstract class Pelaaja(val tk: Tietokanta) {
 }
 
 
+// Testivaiheessa
 class Tekoäly(tk: Tietokanta) extends Pelaaja(tk) {
-  def vuoro = ???
+  def vuoro = new Toiminta(Vector(1.0), Vector(1.5), tk)
   override def toString =  "Botti"
 }
 
 
-class Epätekoäly(tk: Tietokanta, kl: Käyttöliittymä) extends Pelaaja(tk) {
-  def vuoro = ???
-  override def toString = ???
+// Testivaiheessa
+class Epätekoäly(tk: Tietokanta, kl: Option[Käyttöliittymä]) extends Pelaaja(tk) {
+  def vuoro = new Toiminta(Vector(1.0), Vector(1.7), tk)
+  override def toString = "TestiJorma"
 }

@@ -1,6 +1,7 @@
 package states
 
 import util.control.Breaks._
+import scala.math._
 
 abstract class Työ(val kulutus: Vector[Tuote] = Vector(), val tuotto: Vector[Tuote] = Vector(), val koko: Int = 0) {
 
@@ -8,18 +9,18 @@ abstract class Työ(val kulutus: Vector[Tuote] = Vector(), val tuotto: Vector[Tu
   def tyyppiVertaus(a: Työ): Boolean
  
   
-  // Palauttaa ryhmän tyytyväisyyden
+
+  
+  val ahkeruusEksponentti = 1.5
   def toimi(ahkeruus: Double, kassa: Kassa, määrä: Int): Int = {
     val indeksi = (määrä*ahkeruus).toInt
-    var tyytyväisyys = 0
     for (i <- 1 to indeksi) {
       if (kassa.kuluta(kulutus)) {
-        kassa.lisää(tuotto)
-        tyytyväisyys -= 1
+        kassa.lisää(tuotto)   
       }
       else break
     }
-    tyytyväisyys
+    -(määrä*pow(ahkeruus,ahkeruusEksponentti)).toInt
   }
   
   def toimi(ahkeruus: Double, kassa: Kassa): Int = toimi(ahkeruus, kassa, koko)

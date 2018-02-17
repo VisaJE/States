@@ -2,7 +2,7 @@ package states
 import scala.collection.mutable.Buffer
 
 object Testailija extends App {
-  // Luodaan kassa ja sijoitetaan juttuja.
+/*  // Luodaan kassa ja sijoitetaan juttuja.
   val alkuRaha = Raha(100)
   val laitos = new Pelto(Vector(Raha(10)), 10, 6)
   val kaivos = new Kaivos(Vector(Raha(100)), 20, 10)
@@ -38,10 +38,13 @@ object Testailija extends App {
     println(kassa)
     println("tyyt " + kanta.tyytyväisyys)
     println("pop " + kanta.populaatio + "\n")
+  }*/
+  
+  // TESTATAAN PELI-LUOKKAA
+  val peli = new Peli(1,None)
+  for (i <- 1 to 10) {
+    peli.vuoroilija
   }
-  
-  
-  
   
   
   

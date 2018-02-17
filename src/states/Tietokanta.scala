@@ -3,7 +3,7 @@ package states
 
 import scala.math._
 
-class Tietokanta(kassa: Kassa, kartta: Kartta, var populaatio: Int = 0) {
+class Tietokanta(val kassa: Kassa, kartta: Kartta, var populaatio: Int = 0) {
   
   
   val tappoIndeksi = 0.5

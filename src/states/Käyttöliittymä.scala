@@ -9,7 +9,7 @@ class Käyttöliittymä extends SimpleSwingApplication {
   
   def top = this.peliIkkuna
   
-  def vuoro() = ???
+  def vuoro() = println("Nope")
   
   
   

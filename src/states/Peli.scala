@@ -6,8 +6,7 @@ import scala.math._
 
 
 
-class Peli(kl: Käyttöliittymä) {
-  
+class Peli(ihmiset: Int, kl: Option[Käyttöliittymä]) {
   private val generaattori = new Random()
   private def satunnainen(max: Int) = generaattori.nextInt(max)
   
@@ -34,14 +33,19 @@ class Peli(kl: Käyttöliittymä) {
   
   // Määritetään pelin alkutila
   val alkupopulaatio = 50
-  val aloitusesineet: Buffer[Tuote] = Buffer(Raha(100), new Vilja(100))
+  def aloitusesineet: Buffer[Tuote] = Buffer(Raha(150), new Vilja(100))
   
   
   
   val pelaajia = 2
-  private var pelaajat: Vector[Pelaaja] = {for ( i <- 1 to pelaajia) 
+  // Lisätään aluksi botit
+  private var pelaajat: Vector[Pelaaja] = {for ( i <- 1 to pelaajia - ihmiset) 
     yield new Tekoäly(new Tietokanta(new Kassa(aloitusesineet), kartta, alkupopulaatio))}.toVector
- 
+  // Ihmispelaajat. 
+  pelaajat = pelaajat ++ {
+      for (i <- 1 to ihmiset) yield new Epätekoäly(new Tietokanta(
+          new Kassa(aloitusesineet), kartta, alkupopulaatio), kl)}.toVector
+    
 
 
   
@@ -50,17 +54,29 @@ class Peli(kl: Käyttöliittymä) {
   private var voittaja: Option[Pelaaja] = None
   
   
-  def vuoroilija() = {
+  // TESTI
+  pelaajat(0).tk.osta(kartta.laitokset(0))
+  pelaajat(1).tk.osta(kartta.laitokset(1))
+
+      
+      
+  def vuoroilija() = {      
     pelaajat = järjestys(pelaajat)
     if (pelaajat.size == 1) {
       println(pelaajat(0) + " voittaa !!!!")
       voittaja = Some(pelaajat(0))
       }
-    vuoroNumero += 1
-    val toiminnat: Buffer[Vuoro] = Buffer()
-    pelaajat.foreach(toiminnat += _.vuoro)
-    toiminnat.foreach(_.suorita())
-    loikkaukset()
+    if (voittaja == None) {
+      vuoroNumero += 1
+      val toiminnat: Buffer[Vuoro] = Buffer()
+      pelaajat.foreach(toiminnat += _.vuoro)
+      toiminnat.foreach(_.suorita())
+      loikkaukset()
+      
+      
+    // TESTI 
+    pelaajat.foreach((x: Pelaaja) => println(x+ ": " + x.tk.tyytyväisyys + "\n" + x.tk.populaatio + "\n" + x.tk.kassa))     
+    }
   }
   
   
