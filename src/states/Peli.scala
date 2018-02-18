@@ -6,7 +6,7 @@ import scala.math._
 
 
 
-class Peli(ihmiset: Int, kl: Option[Käyttöliittymä]) {
+class Peli(ihmiset: Buffer[String], tekoälyt: Int) {
   private val generaattori = new Random()
   private def satunnainen(max: Int) = generaattori.nextInt(max)
   
@@ -36,15 +36,14 @@ class Peli(ihmiset: Int, kl: Option[Käyttöliittymä]) {
   def aloitusesineet: Buffer[Tuote] = Buffer(Raha(150), new Vilja(100))
   
   
-  
-  val pelaajia = 2
+ 
   // Lisätään aluksi botit
-  private var pelaajat: Vector[Pelaaja] = {for ( i <- 1 to pelaajia - ihmiset) 
+  private var pelaajat: Vector[Pelaaja] = {for ( i <- 1 to tekoälyt) 
     yield new Tekoäly(new Tietokanta(new Kassa(aloitusesineet), kartta, alkupopulaatio))}.toVector
   // Ihmispelaajat. 
   pelaajat = pelaajat ++ {
-      for (i <- 1 to ihmiset) yield new Epätekoäly(new Tietokanta(
-          new Kassa(aloitusesineet), kartta, alkupopulaatio), kl)}.toVector
+      for (i <- ihmiset) yield new Epätekoäly(new Tietokanta(
+          new Kassa(aloitusesineet), kartta, alkupopulaatio), i)}.toVector
     
 
 

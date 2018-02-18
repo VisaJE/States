@@ -41,7 +41,7 @@ object Testailija extends App {
   }*/
   
   // TESTATAAN PELI-LUOKKAA
-  val peli = new Peli(1,None)
+  val peli = new Peli(Buffer(""), 1)
   for (i <- 1 to 10) {
     peli.vuoroilija
   }
