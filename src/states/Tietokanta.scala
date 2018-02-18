@@ -19,6 +19,14 @@ class Tietokanta(val kassa: Kassa, kartta: Kartta, var populaatio: Int = 0) {
     syntyvyys()
   }
   
+    // Ei tee töitä
+  def vuoro() = {
+    teeTyöryhmä(populaatio, 1.0, Vector(new Nollatyö(populaatio)))
+    tarveMittaus()
+    kuluta()
+    syntyvyys()
+  }
+  
   
   def osta(laitos: Laitos): Boolean = {
     if (kassa.kuluta(laitos.hinta)) {
@@ -72,31 +80,33 @@ class Tietokanta(val kassa: Kassa, kartta: Kartta, var populaatio: Int = 0) {
     val työt: Vector[Vector[Työ]] = kassa.työLista
     if (työt.size != v.size || v.size != ahk.size) throw PuutteellinenTyölista("Listojen koot eivät täsmää")
     var vapaana  = populaatio
-    var kokoLista = Array.ofDim[Int](v.size)
-    // Pari on true, mikäli arvo saa vielä muuttua.
-    var osuusLista = v.map((true, _)).toArray
-    while (vapaana > 0 && osuusLista.forall(_._1)) {
-      osuusLista = suhteuta(osuusLista)
-      kokoLista = osuusLista.map((x: (Boolean, Double)) => osuus(x._2))
-      for (i <- 0 until osuusLista.size) {
-        val vapaat = vapaatPaikat(työt(i))
-        val ehdotus = kokoLista(i)
-        if (vapaat <= ehdotus) {
-          osuusLista(i) = (false, osuusLista(i)._2)
-          kokoLista(i) = vapaat
+    if (v.size != 0) { 
+      var kokoLista = Array.ofDim[Int](v.size)
+      // Pari on true, mikäli arvo saa vielä muuttua.
+      var osuusLista = v.map((true, _)).toArray
+      while (vapaana > 0 && osuusLista.forall(_._1)) {
+        osuusLista = suhteuta(osuusLista)
+        kokoLista = osuusLista.map((x: (Boolean, Double)) => osuus(x._2))
+        for (i <- 0 until osuusLista.size) {
+          val vapaat = vapaatPaikat(työt(i))
+          val ehdotus = kokoLista(i)
+          if (vapaat <= ehdotus) {
+            osuusLista(i) = (false, osuusLista(i)._2)
+            kokoLista(i) = vapaat
+          }
         }
+        vapaana = populaatio - kokoLista.reduceLeft(_ + _)   
       }
-      vapaana = populaatio - kokoLista.reduceLeft(_ + _)   
-    }
-    for (i <- 0 until ahk.size) {
-      teeTyöryhmä(kokoLista(i), ahk(i), työt(i))
+      for (i <- 0 until ahk.size) {
+        teeTyöryhmä(kokoLista(i), ahk(i), työt(i))
+      }
     }
     if (vapaana > 0) {
       teeTyöryhmä(vapaana, 1.0, Vector(new Nollatyö(vapaana)))
     }
   }
   
-  
+
 
   def tarveMittaus() = {
     for (tuote <- kassa.tuotteet) {

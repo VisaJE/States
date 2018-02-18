@@ -6,17 +6,30 @@ import javax.swing.ImageIcon
 import javax.swing.SpinnerNumberModel
 import javax.swing.JSpinner
 import scala.collection.mutable.Buffer
-
+import scala.concurrent.{Future, Promise}
 
 object Käyttöliittymä extends SimpleSwingApplication {
   
-  val peliIkkuna = new MainFrame
-  val peliPaneeli = new BoxPanel(Orientation.Vertical)
+  val peliIkkuna = new MainFrame {
+    peer.setLocationRelativeTo(null)
+  }
+  val peliPaneeli = new BoxPanel(Orientation.Vertical) 
   peliIkkuna.contents = peliPaneeli
   
   def top = this.peliIkkuna
   
-  def vuoro() = println("Nope")
+  
+  
+  var tk: Tietokanta = null
+  def vuoro(tk: Tietokanta, nimi: String): Vuoro = { 
+    this.tk = tk
+    pelaajaNimi.text = nimi
+    Käyttöliittymä.alustaPääPaneeli()
+    new Ohita(tk)
+  }
+  
+  
+  
   
   
   val pelaajaNimi  = new TextArea(7, 2) {
@@ -26,7 +39,7 @@ object Käyttöliittymä extends SimpleSwingApplication {
       focusable = false
       
     }
-  pelaajaNimi.text = "Testi"
+  pelaajaNimi.text = "notanimi"
   
   
   // Kertoo pelaavan pelaajan nimen.
@@ -39,9 +52,7 @@ object Käyttöliittymä extends SimpleSwingApplication {
   val kassaNappi = new Button("KASSA")
   val karttaNappi = new Button("KARTTA")
   val työNappi = new Button("HALLINTA")
-  val dataNappi = new Button("HYVINVOINTI")
   val nappiPaneeli = new BoxPanel(Orientation.Horizontal)
-  nappiPaneeli.contents += dataNappi
   nappiPaneeli.contents += kassaNappi
   nappiPaneeli.contents += karttaNappi
   nappiPaneeli.contents += työNappi
@@ -54,10 +65,18 @@ object Käyttöliittymä extends SimpleSwingApplication {
     peliPaneeli.contents.clear()
     peliPaneeli.contents += pelaajaNimi
     peliPaneeli.contents += nappiPaneeli
+    peliPaneeli.contents += Button("Päätä vuoro") {
+      päätäVuoro()
+      odotusPaneeli()
+    }
   }
   peliIkkuna.title = "States"
   
   
+  def päätäVuoro() = {
+    tk = null
+    pelaajaNimi.text = null
+  }
   
   
   // Pelin aloitus
@@ -65,23 +84,31 @@ object Käyttöliittymä extends SimpleSwingApplication {
   var tekoälyjä: Int = 2 
   
   private def alustaAlkuPaneeli() = {
-    peliIkkuna.size = new Dimension(140, 140)
+    peliIkkuna.size = new Dimension(250, 140)
     peliIkkuna.resizable = false
-    val pelaajaMalli = new SpinnerNumberModel(2, 2, 10, 1)
     peliPaneeli.contents.clear()
+    peliPaneeli.focusable = false
+    
+    val pelaajaMalli = new SpinnerNumberModel(1, 1, 10, 1)
     peliPaneeli.contents += new Label("Epätekoälyjen määrä")
     val spinner1 = new JSpinner(pelaajaMalli)
+    spinner1.setEditor(new JSpinner.DefaultEditor(spinner1))
     peliPaneeli.contents += Component.wrap(spinner1)
-    peliPaneeli.focusable = false
+    
     peliPaneeli.contents += new Label("Tekoälyjen määrä")
-    val tekoälyMalli = new SpinnerNumberModel(2,2, 10, 1)
+    val tekoälyMalli = new SpinnerNumberModel(1,1, 10, 1)
     val spinner2 = new JSpinner(tekoälyMalli)
+    spinner2.setEditor(new JSpinner.DefaultEditor(spinner2))
     peliPaneeli.contents += Component.wrap(spinner2)
+    
     peliPaneeli.contents += Button("Seuraava") {
       ihmisiä = spinner1.getValue().##()
       tekoälyjä = spinner2.getValue().##()
       this.nimeäminen()
     }
+    // Koristelua
+    peliPaneeli.border = Swing.LineBorder(new Color(10,10,0), 2)
+    peliPaneeli.background = new Color(200, 189,  140)
   }
   
   var nimiLista: Buffer[String] = Buffer()
@@ -99,28 +126,43 @@ object Käyttöliittymä extends SimpleSwingApplication {
     nimiSyöte.foreach(nimet.contents += _)
     nimet.contents += Button("Aloita") {
       nimiLista = nimiSyöte.map(_.text)
+      odotusPaneeli()
       aloita()
     }
     val scrollable = new ScrollPane(nimet)
     peliPaneeli.contents += scrollable
   }
   
+  
+  def odotusPaneeli() = {
+    peliPaneeli.contents.clear()
+    peliIkkuna.size = new Dimension(300, 100)
+    peliPaneeli.contents += new TextField("Odotetaan muita pelaajia. . .", 20) {
+      editable = false
+    }
+    peliPaneeli.focusable = false
+  }
+  
+  
   private var peli: Peli = null
   
   private def aloita(): Unit = {
     peli = new Peli(nimiLista, tekoälyjä)
-    
   }
   
   
-  def voittoIlmoitus(nimi: String) = {
+  def voittoIlmoitus(voittaja: Option[Pelaaja]) = {
     peliIkkuna.size = new Dimension(40, 80)
     peliIkkuna.resizable = false
     peliPaneeli.contents.clear()
+    val teksti = {
+      if (voittaja == None) "Tasapeli." 
+      else voittaja.get.toString + " voittaa!"
+    }
     peliPaneeli.contents += new TextArea(10, 200) {
       editable = false
       focusable = false
-      text = nimi + " voittaa!"
+      text = teksti
     }
     val napit = new BoxPanel(Orientation.Horizontal)
     napit.contents += new Button("Alusta")
@@ -128,6 +170,9 @@ object Käyttöliittymä extends SimpleSwingApplication {
     peliPaneeli.contents += napit
     peliPaneeli.focusable = false
   }
+  
+  
+  // Tästä lähtee
   alustaAlkuPaneeli()
   
   

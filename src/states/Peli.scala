@@ -44,26 +44,25 @@ class Peli(ihmiset: Buffer[String], tekoälyt: Int) {
   pelaajat = pelaajat ++ {
       for (i <- ihmiset) yield new Epätekoäly(new Tietokanta(
           new Kassa(aloitusesineet), kartta, alkupopulaatio), i)}.toVector
-    
+  
+          // Otetaan talteen kaikki pelanneet
+  val pelaajatAlussa = pelaajat
 
-
+  private var voittaja: Option[Pelaaja] = None
   
   // Suorittaa vuorotoiminnan
   var vuoroNumero = 0
-  private var voittaja: Option[Pelaaja] = None
   
   
-  // TESTI
-  pelaajat(0).tk.osta(kartta.laitokset(0))
-  pelaajat(1).tk.osta(kartta.laitokset(1))
+  
 
       
       
   def vuoroilija() = {      
     pelaajat = järjestys(pelaajat)
-    if (pelaajat.size == 1) {
-      println(pelaajat(0) + " voittaa !!!!")
-      voittaja = Some(pelaajat(0))
+    if (pelaajat.size < 1) {
+      pelaajat.foreach( (x:Pelaaja) =>voittaja = Some(x))
+      pelaajatAlussa.foreach(_.voittoIlmoitus(voittaja))   
       }
     if (voittaja == None) {
       vuoroNumero += 1
@@ -106,6 +105,11 @@ class Peli(ihmiset: Buffer[String], tekoälyt: Int) {
       )
   }
   
+  // Looppi
+  while (voittaja == None) {
+    vuoroilija()
+  }
+  
 }
 
 
@@ -118,4 +122,9 @@ trait Vuoro {
 
 case class Toiminta(työnjako: Vector[Double], ahkeruus: Vector[Double], tk: Tietokanta) extends Vuoro {
   def suorita() = tk.vuoro(työnjako, ahkeruus) 
+}
+
+
+case class Ohita(tk: Tietokanta) extends Vuoro {
+  def suorita = tk.vuoro()
 }
