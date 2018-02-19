@@ -6,6 +6,7 @@ import javax.swing.ImageIcon
 import javax.swing.SpinnerNumberModel
 import javax.swing.JSpinner
 import javax.swing.Timer
+import javax.swing.JTextField
 import scala.collection.mutable.Buffer
 import scala.swing.event.ButtonClicked
 import scala.concurrent.Future
@@ -35,13 +36,10 @@ object Käyttöliittymä extends SimpleSwingApplication {
   def vuoro(tiet: Tietokanta, nimi: String) = {
     tk = tiet
     SwingUtilities.invokeLater(new Runnable() {
-      def run() = {
-        println(Thread.currentThread())
-        
+      def run() = {    
         pelaajaNimi.text = nimi
         alustaPääPaneeli()
       }
-      
     })
   }
   
@@ -49,12 +47,11 @@ object Käyttöliittymä extends SimpleSwingApplication {
 
   
   
-  val pelaajaNimi  = new TextArea(7, 2) {
+  val pelaajaNimi  = new TextArea(50, 50) {
       editable = false
       wordWrap = true
       lineWrap = true
       focusable = false
-      
     }
   pelaajaNimi.text = "notanimi"
   
@@ -62,6 +59,7 @@ object Käyttöliittymä extends SimpleSwingApplication {
   // Kertoo pelaavan pelaajan nimen.
   val nimiPaneeli = new BoxPanel(Orientation.Horizontal)
   nimiPaneeli.contents += pelaajaNimi
+  pelaajaNimi.border = Swing.LineBorder(new Color(10,10,0), 2)
   
   
   
@@ -98,15 +96,14 @@ object Käyttöliittymä extends SimpleSwingApplication {
   
   
   def alustaPääPaneeli() = {
-    println(Thread.currentThread())
     peliPaneeli.contents.clear()
       peliIkkuna.size = new Dimension(460, 460)  
       peliPaneeli.contents += pelaajaNimi
       peliPaneeli.contents += teeTietoPaneeli
       peliPaneeli.contents += teeNapit
       val päättöNappi = Button("Päätä vuoro") {
-        odotusPaneeli()
-        päätäVuoro()
+        peliSäie.interrupt()
+        
       }
       peliPaneeli.contents += päättöNappi
     
@@ -180,7 +177,7 @@ object Käyttöliittymä extends SimpleSwingApplication {
     nimiSyöte.foreach(nimet.contents += _)
     nimet.contents += Button("Aloita") {
       nimiLista = nimiSyöte.map(_.text)
-      peliPaneeli.contents.clear()
+      odotusPaneeli()
       aloita()
     }
     val scrollable = new ScrollPane(nimet)
@@ -189,17 +186,23 @@ object Käyttöliittymä extends SimpleSwingApplication {
   
   
   def odotusPaneeli() = {
-    peliPaneeli.contents.clear()
-    peliIkkuna.size = new Dimension(300, 100)
-    peliPaneeli.contents += new TextField("Odotetaan muita pelaajia. . .", 20) {
-      editable = false
-    }
+    SwingUtilities.invokeLater(new Runnable() {
+      def run() = {    
+        peliPaneeli.contents.clear()
+        peliIkkuna.size = new Dimension(300, 100)
+        peliPaneeli.contents += new TextField("Odotetaan muita pelaajia. . .", 20) {
+        editable = false
+        }
+      }
+    })
   }
   
   
   
+  private var peliSäie: Thread = null
   private def aloita(): Unit = {
-    new Thread(new PeliSäie).start()
+    peliSäie = new Thread(new PeliSäie)
+    peliSäie.start()
   }
   
   class PeliSäie extends Runnable {
@@ -209,30 +212,45 @@ object Käyttöliittymä extends SimpleSwingApplication {
   }
   
   
-  def voittoIlmoitus(voittaja: Option[Pelaaja]) = {
-    peliIkkuna.size = new Dimension(40, 80)
-    peliIkkuna.resizable = false
-    peliPaneeli.contents.clear()
-    val teksti = {
-      if (voittaja == None) "Tasapeli." 
-      else voittaja.get.toString + " voittaa!"
+  private var ilmoitettu = false
+  
+  // Erillinen metodi pääsäikeen valintaan.
+  def voittoIlmoitus(v: Option[Pelaaja]) = {
+    SwingUtilities.invokeLater(new Runnable() {
+      def run() = {    
+        säikeelläIlmoitus(v)
+      }
+    })
+  }
+  
+  private def säikeelläIlmoitus(voittaja: Option[Pelaaja]) = {
+    if (!ilmoitettu) {
+      peliPaneeli.contents.clear()
+      peliIkkuna.size = new Dimension(200, 150)
+      val teksti = {
+        if (voittaja == None) "Tasapeli. (Kaikki oli huonoja.)" 
+        else voittaja.get.toString + " voittaa!"
+      }
+      peliPaneeli.contents += new TextField(teksti, 25) {
+        editable = false
+        focusable = false
+        text = teksti
+      }
+      val napit = new BoxPanel(Orientation.Horizontal)
+      napit.contents += Button("Alusta") {
+        ilmoitettu = false
+        alustaAlkuPaneeli()
+      }
+      napit.contents += Button("Lopeta") { sys.exit(0) }
+      peliPaneeli.contents += napit
+      peliPaneeli.focusable = false
     }
-    peliPaneeli.contents += new TextArea(10, 200) {
-      editable = false
-      focusable = false
-      text = teksti
-    }
-    val napit = new BoxPanel(Orientation.Horizontal)
-    napit.contents += new Button("Alusta")
-    napit.contents += Button("Lopeta") { sys.exit(0) }
-    peliPaneeli.contents += napit
-    peliPaneeli.focusable = false
+    ilmoitettu = true
   }
   
   
   // Tästä lähtee
   alustaAlkuPaneeli()
-  
   
   
 }

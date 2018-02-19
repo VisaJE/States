@@ -74,7 +74,7 @@ class Peli(ihmiset: Buffer[String], tekoälyt: Int) {
       
       
     // TESTI 
-    pelaajat.foreach((x: Pelaaja) => println(x+ ": " + x.tk.tyytyväisyys + "\n" + x.tk.populaatio + "\n" + x.tk.kassa))     
+    pelaajat.foreach((x: Pelaaja) => println(x+ ": " + x.tk.tyytyväisyys + "\n" + x.tk.populaatio + "\n" + x.tk.kassa + "\n"))     
     }
   }
   
