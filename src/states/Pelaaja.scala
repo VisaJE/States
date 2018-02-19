@@ -32,6 +32,8 @@ class Epätekoäly(tk: Tietokanta, nimi: String) extends Pelaaja(tk) {
   
   def vuoro: Vuoro = {
     Käyttöliittymä.vuoro(tk, nimi)
+    Thread.sleep(20000)
+    Käyttöliittymä.toimi.getOrElse(new Ohita(tk))
   }
   
   
@@ -40,6 +42,7 @@ class Epätekoäly(tk: Tietokanta, nimi: String) extends Pelaaja(tk) {
   // Koska käyttöliittymiä on vain yksi
   private var ilmoitettu = false
   def voittoIlmoitus(voittaja: Option[Pelaaja]) = {
+    
     if (!ilmoitettu) {
     Käyttöliittymä.voittoIlmoitus(voittaja)
     ilmoitettu = true

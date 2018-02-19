@@ -49,22 +49,23 @@ class Peli(ihmiset: Buffer[String], tekoälyt: Int) {
   private val pelaajatAlussa = pelaajat
 
   private var voittaja: Option[Pelaaja] = None
+  private var voitettu = false
   
   // Suorittaa vuorotoiminnan
   var vuoroNumero = 0
   
   
   
-
       
       
   def vuoroilija() = {      
     pelaajat = järjestys(pelaajat)
     if (pelaajat.size <= 1) {
       pelaajat.foreach( (x:Pelaaja) =>voittaja = Some(x))
-      pelaajatAlussa.foreach(_.voittoIlmoitus(voittaja))   
+      pelaajatAlussa.foreach(_.voittoIlmoitus(voittaja)) 
+      voitettu = true
       }
-    if (voittaja == None) {
+    if (!voitettu) {
       vuoroNumero += 1
       val toiminnat: Buffer[Vuoro] = Buffer()
       pelaajat.foreach(toiminnat += _.vuoro)
@@ -105,11 +106,10 @@ class Peli(ihmiset: Buffer[String], tekoälyt: Int) {
       )
   }
   
-  // Looppi
-  while (voittaja == None) {
+  // Aloitus
+  while (!voitettu) {
     vuoroilija()
   }
-  
 }
 
 

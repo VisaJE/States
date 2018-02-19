@@ -9,6 +9,7 @@ import javax.swing.Timer
 import scala.collection.mutable.Buffer
 import scala.swing.event.ButtonClicked
 import scala.concurrent.Future
+import javax.swing.SwingUtilities
 
 
 
@@ -26,38 +27,26 @@ object Käyttöliittymä extends SimpleSwingApplication {
   
   
   private var tk: Tietokanta = null
-  private var toimi: Vuoro  = null
+  var toimi: Option[Vuoro]  = None
+  
+  
+  
+  
+  def vuoro(tiet: Tietokanta, nimi: String) = {
+    tk = tiet
+    SwingUtilities.invokeLater(new Runnable() {
+      def run() = {
+        println(Thread.currentThread())
+        
+        pelaajaNimi.text = nimi
+        alustaPääPaneeli()
+      }
+      
+    })
+  }
   
 
-  
-  
-  def vuoro(tiet: Tietokanta, nimi: String): Vuoro = {
-    this.tk = tiet
-    pelaajaNimi.text = nimi
-    val nappi = Käyttöliittymä.alustaPääPaneeli()
-    new Thread(new Kuuntelu(nappi)).start()
-    lueToimi
-  }
-  
-  // Aikarajan toimintaan.
-  class Kuuntelu(nappi: Button) extends Runnable {
-    def run() =  synchronized {
-      listenTo(nappi)
-      reactions += {
-      case ButtonClicked(nappi) => {
-        toimi =  new Ohita(tk)
-        notifyAll()
-      }
-    }
-    }
-  }
-  
-    def lueToimi = synchronized {
-    while (toimi == null) {
-      this.wait()
-    }
-    toimi
-  }
+
   
   
   val pelaajaNimi  = new TextArea(7, 2) {
@@ -109,24 +98,28 @@ object Käyttöliittymä extends SimpleSwingApplication {
   
   
   def alustaPääPaneeli() = {
+    println(Thread.currentThread())
     peliPaneeli.contents.clear()
-    peliIkkuna.size = new Dimension(460, 460)  
-    peliPaneeli.contents += pelaajaNimi
-    peliPaneeli.contents += teeTietoPaneeli
-    peliPaneeli.contents += teeNapit
-    val päättöNappi = Button("Päätä vuoro") {
-      odotusPaneeli()
-      päätäVuoro()
-    }
-    peliPaneeli.contents += päättöNappi
-    päättöNappi
+      peliIkkuna.size = new Dimension(460, 460)  
+      peliPaneeli.contents += pelaajaNimi
+      peliPaneeli.contents += teeTietoPaneeli
+      peliPaneeli.contents += teeNapit
+      val päättöNappi = Button("Päätä vuoro") {
+        odotusPaneeli()
+        päätäVuoro()
+      }
+      peliPaneeli.contents += päättöNappi
+    
   }
+  
+
   
   
   
   def päätäVuoro() = {
     tk = null
     pelaajaNimi.text = "notaname"
+    toimi = None
   }
   
   
@@ -204,10 +197,15 @@ object Käyttöliittymä extends SimpleSwingApplication {
   }
   
   
-  private var peli: Peli = null
   
   private def aloita(): Unit = {
-    peli = new Peli(nimiLista, tekoälyjä)
+    new Thread(new PeliSäie).start()
+  }
+  
+  class PeliSäie extends Runnable {
+    def run = {
+      new Peli(nimiLista, tekoälyjä)
+    }
   }
   
   
