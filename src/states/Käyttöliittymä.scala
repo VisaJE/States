@@ -5,8 +5,12 @@ import scala.swing.event._
 import javax.swing.ImageIcon
 import javax.swing.SpinnerNumberModel
 import javax.swing.JSpinner
+import javax.swing.Timer
 import scala.collection.mutable.Buffer
-import scala.concurrent.{Future, Promise}
+import scala.swing.event.ButtonClicked
+import scala.concurrent.Future
+
+
 
 object Käyttöliittymä extends SimpleSwingApplication {
   
@@ -15,21 +19,45 @@ object Käyttöliittymä extends SimpleSwingApplication {
   }
   val peliPaneeli = new BoxPanel(Orientation.Vertical) 
   peliIkkuna.contents = peliPaneeli
+  peliIkkuna.title = "States"
   
   def top = this.peliIkkuna
   
   
   
-  var tk: Tietokanta = null
-  def vuoro(tk: Tietokanta, nimi: String): Vuoro = { 
-    this.tk = tk
+  private var tk: Tietokanta = null
+  private var toimi: Vuoro  = null
+  
+
+  
+  
+  def vuoro(tiet: Tietokanta, nimi: String): Vuoro = {
+    this.tk = tiet
     pelaajaNimi.text = nimi
-    Käyttöliittymä.alustaPääPaneeli()
-    new Ohita(tk)
+    val nappi = Käyttöliittymä.alustaPääPaneeli()
+    new Thread(new Kuuntelu(nappi)).start()
+    lueToimi
   }
   
+  // Aikarajan toimintaan.
+  class Kuuntelu(nappi: Button) extends Runnable {
+    def run() =  synchronized {
+      listenTo(nappi)
+      reactions += {
+      case ButtonClicked(nappi) => {
+        toimi =  new Ohita(tk)
+        notifyAll()
+      }
+    }
+    }
+  }
   
-  
+    def lueToimi = synchronized {
+    while (toimi == null) {
+      this.wait()
+    }
+    toimi
+  }
   
   
   val pelaajaNimi  = new TextArea(7, 2) {
@@ -49,33 +77,56 @@ object Käyttöliittymä extends SimpleSwingApplication {
   
   
   // Napit pelin pääikkunaan
-  val kassaNappi = new Button("KASSA")
-  val karttaNappi = new Button("KARTTA")
-  val työNappi = new Button("HALLINTA")
-  val nappiPaneeli = new BoxPanel(Orientation.Horizontal)
-  nappiPaneeli.contents += kassaNappi
-  nappiPaneeli.contents += karttaNappi
-  nappiPaneeli.contents += työNappi
-  nappiPaneeli.contents.foreach(_.focusable = false)
+    def teeNapit = {
+    val kassaNappi = new Button("KASSA")
+    val karttaNappi = new Button("KARTTA")
+    val työNappi = new Button("HALLINTA")
+    val nappiPaneeli = new BoxPanel(Orientation.Horizontal)
+    nappiPaneeli.contents += kassaNappi
+    nappiPaneeli.contents += karttaNappi
+    nappiPaneeli.contents += työNappi
+    nappiPaneeli.contents.foreach(_.focusable = false)
+    nappiPaneeli
+  }
   
   
+  def teeTietoPaneeli = {
+    val paneeli = new BoxPanel(Orientation.Vertical)
+    
+    val pop = "Kansan populaatio: " + tk.populaatio +"."
+    paneeli.contents += new TextField(pop, 20) {
+      focusable = false
+      editable = false
+    }
+    
+    val tyyt = "Kansan keskimääräinen tyytyväisyys: " + tk.tyytyväisyys+"."
+    paneeli.contents += new TextField(tyyt, 20) {
+      focusable = false
+      editable = false
+    }
+    paneeli
+  }
   
   
   def alustaPääPaneeli() = {
     peliPaneeli.contents.clear()
+    peliIkkuna.size = new Dimension(460, 460)  
     peliPaneeli.contents += pelaajaNimi
-    peliPaneeli.contents += nappiPaneeli
-    peliPaneeli.contents += Button("Päätä vuoro") {
-      päätäVuoro()
+    peliPaneeli.contents += teeTietoPaneeli
+    peliPaneeli.contents += teeNapit
+    val päättöNappi = Button("Päätä vuoro") {
       odotusPaneeli()
+      päätäVuoro()
     }
+    peliPaneeli.contents += päättöNappi
+    päättöNappi
   }
-  peliIkkuna.title = "States"
+  
   
   
   def päätäVuoro() = {
     tk = null
-    pelaajaNimi.text = null
+    pelaajaNimi.text = "notaname"
   }
   
   
@@ -84,19 +135,26 @@ object Käyttöliittymä extends SimpleSwingApplication {
   var tekoälyjä: Int = 2 
   
   private def alustaAlkuPaneeli() = {
-    peliIkkuna.size = new Dimension(250, 140)
+    peliIkkuna.size = new Dimension(250, 164)
     peliIkkuna.resizable = false
     peliPaneeli.contents.clear()
     peliPaneeli.focusable = false
     
-    val pelaajaMalli = new SpinnerNumberModel(1, 1, 10, 1)
-    peliPaneeli.contents += new Label("Epätekoälyjen määrä")
+
+    val otsikko = new TextField("Pelaajien määrä", 24) {
+      editable = false
+      focusable = false
+    }
+    peliPaneeli.contents += otsikko
+    
+    val pelaajaMalli = new SpinnerNumberModel(1, 0, 10, 1)
+    peliPaneeli.contents += new Label("Epätekoälyt")
     val spinner1 = new JSpinner(pelaajaMalli)
     spinner1.setEditor(new JSpinner.DefaultEditor(spinner1))
     peliPaneeli.contents += Component.wrap(spinner1)
     
-    peliPaneeli.contents += new Label("Tekoälyjen määrä")
-    val tekoälyMalli = new SpinnerNumberModel(1,1, 10, 1)
+    peliPaneeli.contents += new Label("Tekoälyt")
+    val tekoälyMalli = new SpinnerNumberModel(1,0, 10, 1)
     val spinner2 = new JSpinner(tekoälyMalli)
     spinner2.setEditor(new JSpinner.DefaultEditor(spinner2))
     peliPaneeli.contents += Component.wrap(spinner2)
@@ -104,12 +162,15 @@ object Käyttöliittymä extends SimpleSwingApplication {
     peliPaneeli.contents += Button("Seuraava") {
       ihmisiä = spinner1.getValue().##()
       tekoälyjä = spinner2.getValue().##()
+      if (ihmisiä + tekoälyjä >= 2) {
       this.nimeäminen()
+      } else otsikko.text = "Pelaajia oltava vähintään kaksi."
     }
     // Koristelua
     peliPaneeli.border = Swing.LineBorder(new Color(10,10,0), 2)
     peliPaneeli.background = new Color(200, 189,  140)
   }
+  
   
   var nimiLista: Buffer[String] = Buffer()
   private def nimeäminen() = {
@@ -126,7 +187,7 @@ object Käyttöliittymä extends SimpleSwingApplication {
     nimiSyöte.foreach(nimet.contents += _)
     nimet.contents += Button("Aloita") {
       nimiLista = nimiSyöte.map(_.text)
-      odotusPaneeli()
+      peliPaneeli.contents.clear()
       aloita()
     }
     val scrollable = new ScrollPane(nimet)
@@ -140,7 +201,6 @@ object Käyttöliittymä extends SimpleSwingApplication {
     peliPaneeli.contents += new TextField("Odotetaan muita pelaajia. . .", 20) {
       editable = false
     }
-    peliPaneeli.focusable = false
   }
   
   
@@ -177,13 +237,6 @@ object Käyttöliittymä extends SimpleSwingApplication {
   
   
   
-  
-  
-  
-  
-  
-  
-  
-  
-  
 }
+
+

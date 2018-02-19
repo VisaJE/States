@@ -15,16 +15,16 @@ class Peli(ihmiset: Buffer[String], tekoälyt: Int) {
   
   
   // Määritetään laitokset ja niiden parametrit.
-  val peltoteho = 6
-  val peltoja = satunnainen(10) + 5
+  private val peltoteho = 6
+  private val peltoja = satunnainen(10) + 5
   for (i <- 1 to peltoja) {
     val joku = satunnainen(100)
     kartta.lisää(new Pelto(Vector(Raha(joku+20)), 20 + joku/3, peltoteho))
   }
   
   
-  val kaivosteho = 10
-  val kaivoksia = satunnainen(8) + 2
+  private val kaivosteho = 10
+  private val kaivoksia = satunnainen(8) + 2
   for (i <- 1 to kaivoksia) {
     val joku = satunnainen(200)
     kartta.lisää(new Kaivos(Vector(Raha(joku+50)), 10 + joku, kaivosteho))
@@ -32,7 +32,7 @@ class Peli(ihmiset: Buffer[String], tekoälyt: Int) {
   
   
   // Määritetään pelin alkutila
-  val alkupopulaatio = 50
+  private val alkupopulaatio = 50
   def aloitusesineet: Buffer[Tuote] = Buffer(Raha(150), new Vilja(100))
   
   
@@ -46,7 +46,7 @@ class Peli(ihmiset: Buffer[String], tekoälyt: Int) {
           new Kassa(aloitusesineet), kartta, alkupopulaatio), i)}.toVector
   
           // Otetaan talteen kaikki pelanneet
-  val pelaajatAlussa = pelaajat
+  private val pelaajatAlussa = pelaajat
 
   private var voittaja: Option[Pelaaja] = None
   
@@ -60,7 +60,7 @@ class Peli(ihmiset: Buffer[String], tekoälyt: Int) {
       
   def vuoroilija() = {      
     pelaajat = järjestys(pelaajat)
-    if (pelaajat.size < 1) {
+    if (pelaajat.size <= 1) {
       pelaajat.foreach( (x:Pelaaja) =>voittaja = Some(x))
       pelaajatAlussa.foreach(_.voittoIlmoitus(voittaja))   
       }
