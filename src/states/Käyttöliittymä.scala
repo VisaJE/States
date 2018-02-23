@@ -16,9 +16,7 @@ import javax.swing.SwingUtilities
 
 object Käyttöliittymä extends SimpleSwingApplication {
   
-  val peliIkkuna = new MainFrame {
-    peer.setLocationRelativeTo(null)
-  }
+  val peliIkkuna = new MainFrame 
   val peliPaneeli = new BoxPanel(Orientation.Vertical) 
   peliIkkuna.contents = peliPaneeli
   peliIkkuna.title = "States"
@@ -136,25 +134,29 @@ object Käyttöliittymä extends SimpleSwingApplication {
   private def kassaLista = {
     val listaPaneeli = new BoxPanel(Orientation.Vertical)
       if (tk.kassa.tuotteet.size > 0) {
-      for (i <- tk.kassa.tuotteet) {
-        val panel = new BoxPanel(Orientation.Horizontal)
-        val field = new TextArea(1, 15) {
-          text = i.toString
-          editable = false
-          focusable = false
-          border = Swing.EmptyBorder(10, 30, 10, 30)
+         val verrokki = Raha(0)
+        for (i <- tk.kassa.tuotteet) {
+          val panel = new BoxPanel(Orientation.Horizontal)
+          val field = new TextArea(1, 15) {
+            text = i.toString
+            editable = false
+            focusable = false
+            border = Swing.EmptyBorder(10, 30, 10, 30)
+          }  
+          panel.contents += field
+          if (!i.tyyppiVertaus(verrokki)) {
+              val malli = new SpinnerNumberModel(i.määrä/10, 0, i.määrä, 10)        
+            val spinneri = new JSpinner(malli)
+            
+            panel.contents += Component.wrap(spinneri)
+            panel.contents += Button("Myy") {
+              i.myy(spinneri.getValue.##(), tk.kassa)
+              alustaKassa()
+            }
+          }
+          panel.border = Swing.LineBorder(new Color(10,10,0), 1)
+          listaPaneeli.contents += panel
         }
-        
-        val malli = new SpinnerNumberModel(0, 0, i.määrä, 10)
-        val spinneri = new JSpinner(malli)
-        panel.contents += field
-        panel.contents += Component.wrap(spinneri)
-        panel.contents += Button("Myy") {
-          i.myy(spinneri.getValue.##(), tk.kassa)
-          alustaKassa()
-        }
-        listaPaneeli.contents += panel
-      }
     }
       else listaPaneeli.contents += new TextField("Ei tunnettuja esineitä.")
     listaPaneeli
@@ -209,6 +211,7 @@ object Käyttöliittymä extends SimpleSwingApplication {
     // Koristelua
     peliPaneeli.border = Swing.LineBorder(new Color(10,10,0), 2)
     peliPaneeli.background = new Color(200, 189,  140)
+    peliIkkuna.centerOnScreen()
   }
   
   
@@ -232,6 +235,7 @@ object Käyttöliittymä extends SimpleSwingApplication {
     }
     val scrollable = new ScrollPane(nimet)
     peliPaneeli.contents += scrollable
+    peliIkkuna.centerOnScreen()
   }
   
   
@@ -272,6 +276,7 @@ object Käyttöliittymä extends SimpleSwingApplication {
       }
     })
   }
+  
   
   private def säikeelläIlmoitus(voittaja: Option[Pelaaja]) = {
     if (!ilmoitettu) {
