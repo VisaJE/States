@@ -45,7 +45,15 @@ object Käyttöliittymä extends SimpleSwingApplication {
   }
   
 
-
+  
+  private def määritäToiminta(työt: Vector[Double], ahk: Vector[Double]): Unit = {
+    require(työt.size == ahk.size)
+    toimi = Some(new Toiminta(työt, ahk, tk))
+  }
+  private def määritäToiminta(): Unit = {
+    val vektori = Array.ofDim[Double](tk.kassa.työLista.size).map(_=>1.0).toVector
+    määritäToiminta(vektori, vektori)
+  }
   
   
   val pelaajaNimi  = new TextArea(1, 5) {
@@ -86,9 +94,12 @@ object Käyttöliittymä extends SimpleSwingApplication {
   nappiPaneeli.contents.foreach(listenTo(_))  
   reactions += {
     case ButtonClicked(`kassaNappi`) => alustaKassa()
+    case ButtonClicked(`työNappi`) => alustaTyönjako()
   }
   
-  def teeTietoPaneeli = {
+  
+  // Tähän voisi myös lisätä jonkin kuvan
+  private def teeTietoPaneeli = {
     val paneeli = new BoxPanel(Orientation.Vertical)
     
     val pop = "Kansan populaatio: " + tk.populaatio +"."
@@ -106,7 +117,7 @@ object Käyttöliittymä extends SimpleSwingApplication {
   }
   
   
-  def alustaPääPaneeli() = {
+  private def alustaPääPaneeli() = {
     peliPaneeli.contents.clear()
       peliIkkuna.size = new Dimension(460, 460)  
       peliPaneeli.contents += nimiPaneeli
@@ -116,7 +127,7 @@ object Käyttöliittymä extends SimpleSwingApplication {
   }
   
   
-  def alustaKassa(): Unit = {
+  private def alustaKassa(): Unit = {
     muutIkkunat.foreach(_.dispose())
     val kassaIkkuna = new Frame()
     kassaIkkuna.title = "KASSA"
@@ -145,7 +156,7 @@ object Käyttöliittymä extends SimpleSwingApplication {
           }  
           panel.contents += field
           if (!i.tyyppiVertaus(verrokki)) {
-              val malli = new SpinnerNumberModel(i.määrä/10, 0, i.määrä, 10)        
+            val malli = new SpinnerNumberModel(i.määrä/10, 0, i.määrä, 10)        
             val spinneri = new JSpinner(malli)
             
             panel.contents += Component.wrap(spinneri)
@@ -162,7 +173,45 @@ object Käyttöliittymä extends SimpleSwingApplication {
     listaPaneeli
   }
   
-
+  
+  private def alustaTyönjako() = {
+    muutIkkunat.foreach(_.dispose)
+    val työIkkuna = new Frame()
+    muutIkkunat += työIkkuna
+    työIkkuna.title = "HALLINTA"
+    työIkkuna.size = new Dimension (300, 300)
+    työIkkuna.centerOnScreen()
+    val sisältö = new BoxPanel(Orientation.Vertical)
+    val scrollable = new ScrollPane(työLista)
+    sisältö.contents += scrollable
+    työIkkuna.contents = sisältö
+    työIkkuna.visible_=(true)
+  }
+  
+  
+  private def työLista:Panel = {
+    val lista = tk.kassa.työLista
+    println(lista.size)
+    val paneeli = new BoxPanel(Orientation.Horizontal)
+    if (lista.size > 0) {
+      for (i <- lista) {
+        val sisäPaneeli = new BoxPanel(Orientation.Vertical)
+        sisäPaneeli.contents += new TextArea(2,5) {
+          text = i(0).toString
+          editable = false
+          focusable = false
+        }
+        val ahkMalli = new SpinnerNumberModel(1.0, 0.0, 2.0, 0.2)        
+        val spinneri = new JSpinner(ahkMalli)
+        spinneri.setEditor(new JSpinner.DefaultEditor(spinneri))
+        sisäPaneeli.contents += new Label("Panostus")
+        sisäPaneeli.contents += Component.wrap(spinneri)
+        paneeli.contents += sisäPaneeli
+      }
+    }
+    else paneeli.contents += new TextField("Töitä ei löydy!", 20)
+    paneeli
+  }
   
   def päätäVuoro() = {
     tk = null
