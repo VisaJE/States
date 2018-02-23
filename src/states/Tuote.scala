@@ -52,12 +52,10 @@ abstract class Tuote(val arvo: Int, val määrä: Int) {
   }
   
   
-  def myy(myytävä: Int): (Tuote, Option[Int]) = {
+  def myy(myytävä: Int, kassa: Kassa) = {
     if (myytävä <= määrä) {
-      (this.copy(määrä - myytävä), Some(myytävä*arvo))
-    }
-    else {
-      (this, None)
+      kassa.kuluta(Vector(this.copy(myytävä)))
+      kassa.lisää(Raha(myytävä*arvo))
     }
   }
 }

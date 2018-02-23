@@ -1,4 +1,4 @@
-package states
+  package states
 
 import scala.swing._
 import scala.swing.event._
@@ -26,6 +26,8 @@ object Käyttöliittymä extends SimpleSwingApplication {
   def top = this.peliIkkuna
   
   
+  val muutIkkunat: Buffer[Frame] = Buffer()
+  
   
   private var tk: Tietokanta = null
   var toimi: Option[Vuoro]  = None
@@ -35,10 +37,11 @@ object Käyttöliittymä extends SimpleSwingApplication {
   
   def vuoro(tiet: Tietokanta, nimi: String) = {
     tk = tiet
-    SwingUtilities.invokeLater(new Runnable() {
+    SwingUtilities.invokeAndWait(new Runnable() {
       def run() = {    
         pelaajaNimi.text = nimi
         alustaPääPaneeli()
+      
       }
     })
   }
@@ -47,35 +50,45 @@ object Käyttöliittymä extends SimpleSwingApplication {
 
   
   
-  val pelaajaNimi  = new TextArea(50, 50) {
+  val pelaajaNimi  = new TextArea(1, 5) {
       editable = false
-      wordWrap = true
-      lineWrap = true
       focusable = false
     }
   pelaajaNimi.text = "notanimi"
   
-  
   // Kertoo pelaavan pelaajan nimen.
-  val nimiPaneeli = new BoxPanel(Orientation.Horizontal)
+  val nimiPaneeli = new BoxPanel(Orientation.Vertical)
   nimiPaneeli.contents += pelaajaNimi
-  pelaajaNimi.border = Swing.LineBorder(new Color(10,10,0), 2)
-  
   
   
   // Napit pelin pääikkunaan
-    def teeNapit = {
     val kassaNappi = new Button("KASSA")
     val karttaNappi = new Button("KARTTA")
     val työNappi = new Button("HALLINTA")
+    val päättöNappi = Button("Päätä vuoro") {
+        peliSäie.interrupt()
+      }
+    val päättö = new BoxPanel(Orientation.Horizontal) {
+        contents += päättöNappi 
+      }
+    val superNappiPaneeli = new BoxPanel(Orientation.Vertical)
     val nappiPaneeli = new BoxPanel(Orientation.Horizontal)
     nappiPaneeli.contents += kassaNappi
     nappiPaneeli.contents += karttaNappi
     nappiPaneeli.contents += työNappi
-    nappiPaneeli.contents.foreach(_.focusable = false)
-    nappiPaneeli
+    nappiPaneeli.contents.foreach(_.focusable= false)
+    superNappiPaneeli.contents += nappiPaneeli
+    superNappiPaneeli.contents += päättö
+    superNappiPaneeli.contents.foreach(_.focusable = false)
+    superNappiPaneeli.background = new Color(200, 189,  140)
+    def napit = {   
+    superNappiPaneeli
   }
   
+  nappiPaneeli.contents.foreach(listenTo(_))  
+  reactions += {
+    case ButtonClicked(`kassaNappi`) => alustaKassa()
+  }
   
   def teeTietoPaneeli = {
     val paneeli = new BoxPanel(Orientation.Vertical)
@@ -98,25 +111,62 @@ object Käyttöliittymä extends SimpleSwingApplication {
   def alustaPääPaneeli() = {
     peliPaneeli.contents.clear()
       peliIkkuna.size = new Dimension(460, 460)  
-      peliPaneeli.contents += pelaajaNimi
+      peliPaneeli.contents += nimiPaneeli
       peliPaneeli.contents += teeTietoPaneeli
-      peliPaneeli.contents += teeNapit
-      val päättöNappi = Button("Päätä vuoro") {
-        peliSäie.interrupt()
+      peliPaneeli.contents += napit
+      peliIkkuna.centerOnScreen()
+  }
+  
+  
+  def alustaKassa(): Unit = {
+    muutIkkunat.foreach(_.dispose())
+    val kassaIkkuna = new Frame()
+    kassaIkkuna.title = "KASSA"
+    kassaIkkuna.size = new Dimension (300, 300)
+    kassaIkkuna.centerOnScreen()
+    val sisältö = new BoxPanel(Orientation.Vertical)
+    val scrollable = new ScrollPane(kassaLista)
+    sisältö.contents += scrollable
+    kassaIkkuna.contents = sisältö
+    kassaIkkuna.visible_=(true)
+    muutIkkunat += kassaIkkuna
+  }
+  
+  
+  private def kassaLista = {
+    val listaPaneeli = new BoxPanel(Orientation.Vertical)
+      if (tk.kassa.tuotteet.size > 0) {
+      for (i <- tk.kassa.tuotteet) {
+        val panel = new BoxPanel(Orientation.Horizontal)
+        val field = new TextArea(1, 15) {
+          text = i.toString
+          editable = false
+          focusable = false
+          border = Swing.EmptyBorder(10, 30, 10, 30)
+        }
         
+        val malli = new SpinnerNumberModel(0, 0, i.määrä, 10)
+        val spinneri = new JSpinner(malli)
+        panel.contents += field
+        panel.contents += Component.wrap(spinneri)
+        panel.contents += Button("Myy") {
+          i.myy(spinneri.getValue.##(), tk.kassa)
+          alustaKassa()
+        }
+        listaPaneeli.contents += panel
       }
-      peliPaneeli.contents += päättöNappi
-    
+    }
+      else listaPaneeli.contents += new TextField("Ei tunnettuja esineitä.")
+    listaPaneeli
   }
   
 
-  
-  
   
   def päätäVuoro() = {
     tk = null
     pelaajaNimi.text = "notaname"
     toimi = None
+    muutIkkunat.foreach(frame => frame.dispose())
   }
   
   
