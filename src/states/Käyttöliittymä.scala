@@ -142,6 +142,7 @@ object Käyttöliittymä extends SimpleSwingApplication {
   }
   
   
+  // Paneeli, jossa kaikki pelaajan omistamat tuotteet.
   private def kassaLista = {
     val listaPaneeli = new BoxPanel(Orientation.Vertical)
       if (tk.kassa.tuotteet.size > 0) {
@@ -189,18 +190,33 @@ object Käyttöliittymä extends SimpleSwingApplication {
   }
   
   
+  // Paneeli, jossa kaikki työt ja niihin liittyvät toiminnot 
   private def työLista:Panel = {
+    
     val lista = tk.kassa.työLista
-    println(lista.size)
+    val työnJako = Array.ofDim[Int](lista.size)
     val paneeli = new BoxPanel(Orientation.Horizontal)
+    var indeksi = -1
     if (lista.size > 0) {
       for (i <- lista) {
+        indeksi += 1
+        val indeksiTässä = indeksi
         val sisäPaneeli = new BoxPanel(Orientation.Vertical)
         sisäPaneeli.contents += new TextArea(2,5) {
           text = i(0).toString
           editable = false
           focusable = false
         }
+        val slideri = lisääSlider()
+        sisäPaneeli.contents += slideri
+        listenTo(slideri)
+        reactions += {
+          case ValueChanged(`slideri`) => {
+            asetaSlideri(indeksiTässä, slideri.value)
+          }
+        }
+        
+        
         val ahkMalli = new SpinnerNumberModel(1.0, 0.0, 2.0, 0.2)        
         val spinneri = new JSpinner(ahkMalli)
         spinneri.setEditor(new JSpinner.DefaultEditor(spinneri))
@@ -213,12 +229,79 @@ object Käyttöliittymä extends SimpleSwingApplication {
     paneeli
   }
   
+  
+  // Työnjaon sliderien hallintaan
+  private val sliderit: Buffer[Slider] = Buffer()
+  private def lisääSlider():Slider = {
+    val slider = new Slider {
+    min = 0
+    max = 100
+    majorTickSpacing = 1
+    orientation = Orientation.Vertical
+    }
+    sliderit += slider
+    slider
+  }
+  private def poistaSliderit() = sliderit.clear()
+  
+  private def asetaSlideri(i: Int, arvo: Int) = {
+    val lista = sliderit.map(_.value).toArray.map(x => (false, x))
+    lista(i) = (true, arvo)
+    val suhteutettu = suhteuta(lista)
+    sliderit.zip(suhteutettu).foreach(x => x._1.value = x._2)
+  }
+  // Skaalaa halutut arvot siten, että ne summautuvat sataseksi. Vain niiden arvoa muutetaan, joiden totuusarvo on false.
+  private def suhteuta(v: Array[(Boolean, Int)]) = {
+    val loppuSumma = 100 - v.foldLeft(0)((a,x) => if (x._1) a + x._2 else a)
+    val nyt = v.foldLeft(0)( (a, x) => if(!x._1) a + x._2 else a)
+    val kerroin = {
+      if (nyt > 0) loppuSumma/nyt
+      else 0
+    }
+    v.map(x => if (!x._1) (kerroin*x._2).toInt else x._2)
+  }
+  
+  
+  // Laitoksesta saatava info ja ostomahdollisuus paneelissa.
+  private def laitosPaneeli(laitos: Laitos) = {
+    val paneeli = new BoxPanel(Orientation.Vertical)
+    val omistaja = laitos.omistus
+    paneeli.contents += new TextArea(2, 5) {
+      text = laitos.toString
+      editable = false
+      focusable = false
+      border = Swing.LineBorder(new Color(10,10,0),1)
+    }
+    paneeli.contents += new TextArea(2,5) {
+      editable = false
+      focusable = false
+      text = {
+        if (omistaja != None) {
+          "Omistaja: " + omistaja.get
+        }
+        else "Vapailla markkinoilla."
+      }
+    }
+    if (omistaja == None)  {
+      paneeli.contents += new TextField(laitos.hintaString, 20)
+      paneeli.contents += Button("Osta") {
+        if (!tk.osta(laitos)) {
+          paneeli.contents += new TextField("Osto epäonnistui." , 20)
+          // Tänne vielä ikkunan päivitys
+        }
+      }
+    }
+  }
+  
+  
   def päätäVuoro() = {
+    muutIkkunat.foreach(frame => frame.dispose())
     tk = null
     pelaajaNimi.text = "notaname"
     toimi = None
-    muutIkkunat.foreach(frame => frame.dispose())
+    
   }
+  
   
   
   // Pelin aloitus

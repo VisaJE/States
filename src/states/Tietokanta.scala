@@ -65,7 +65,10 @@ class Tietokanta(val kassa: Kassa, kartta: Kartta, var populaatio: Int = 0) {
   // Skaalaa halutut arvot siten, että ne summautuvat ykköseksi.
   private def suhteuta(v: Array[(Boolean, Double)]) = {
     val nyt = v.foldLeft(0.0)( (a: Double, x: (Boolean, Double)) => if (x._1) a + x._2 else a)
-    val kerroin = 1.0/nyt
+    val kerroin = {
+      if (nyt > 0) 1.0/nyt
+      else 0
+    }
     v.map((x: (Boolean, Double)) => if (x._1) (true, kerroin*x._2) else (true, x._2))
   }
  

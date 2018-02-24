@@ -7,8 +7,22 @@ abstract class Laitos(val hinta: Vector[Tuote], val työt: Vector[Työ]) {
   
   override def toString: String
   
+  def hintaString: String = "Vaatii " + {
+    if (hinta.size == 1) {
+      hinta(0).toString.toLowerCase + "."
+    }
+    else if (hinta.size == 2) {
+      hinta(0).toString.toLowerCase + " ja " +  hinta(1).toString.toLowerCase + "."
+    }
+    else if (hinta.size > 2) {
+      hinta.tail.dropRight(1).foldLeft(hinta(0).toString.toLowerCase)(_  +", "+ _.toString.toLowerCase) +
+      " ja " + hinta.last.toString.toLowerCase + "."
+    }
+  }
+  
   private var omistaja: Option[Tietokanta] = None
   
+  def omistus = omistaja
   
   def onOmistettu = {
     if (omistaja != None) true
