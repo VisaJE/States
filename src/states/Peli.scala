@@ -40,10 +40,10 @@ class Peli(ihmiset: Buffer[String], tekoälyt: Int) {
   // Lisätään aluksi botit
   private var pelaajat: Vector[Pelaaja] = {for ( i <- 1 to tekoälyt) 
     yield new Tekoäly(new Tietokanta(new Kassa(aloitusesineet), kartta, alkupopulaatio))}.toVector
-  // Ihmispelaajat. 
+  // Ihmispelaajat. Testiksi alkuun pelto.
   pelaajat = pelaajat ++ {
       for (i <- ihmiset) yield new Epätekoäly(new Tietokanta(
-          new Kassa(aloitusesineet), kartta, alkupopulaatio), i)}.toVector
+          new Kassa(aloitusesineet, Buffer(new Pelto(Vector(),10,10), new Kaivos(Vector(), 10, 10), new Pelto(Vector(),20,10))), kartta, alkupopulaatio), i)}.toVector
   
           // Otetaan talteen kaikki pelanneet
   private val pelaajatAlussa = pelaajat

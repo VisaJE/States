@@ -143,7 +143,7 @@ class Rauta(m: Int = 0) extends Tuote(5, m) {
   
   def tyyppiVertaus(a: Tuote) = {
     a match {
-      case a: Vilja => true
+      case a: Rauta => true
       case _ => false
     }
   }

@@ -9,7 +9,8 @@ abstract class Työ(val kulutus: Vector[Tuote] = Vector(), val tuotto: Vector[Tu
   def tyyppiVertaus(a: Työ): Boolean
  
   
-
+  override def toString: String
+  
   
   val ahkeruusEksponentti = 1.5
   def toimi(ahkeruus: Double, kassa: Kassa, määrä: Int): Int = {
@@ -39,7 +40,7 @@ class Viljely(koko: Int, teho: Int) extends Työ(tuotto = Vector(new Vilja(teho)
       case _ => false
     }
   }
-    
+  override def toString = " Viljely"  
     
 }
 
@@ -56,7 +57,7 @@ class Nollatyö(koko: Int) extends Työ(koko = koko) {
   override def toimi(ahkeruus: Double, kassa: Kassa, määrä: Int) = {
      toimi(ahkeruus, kassa)
   }
-   
+  override def toString = " Turhanpanttista lomailua."
 }
 
 
@@ -68,4 +69,5 @@ class Kaivostyö(koko: Int, teho: Int) extends Työ(tuotto = Vector(new Rauta(te
       case _ => false
     }
   }
+    override def toString = " Kaivostyöt"
 }

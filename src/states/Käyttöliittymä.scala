@@ -48,7 +48,7 @@ object Käyttöliittymä extends SimpleSwingApplication {
 
   
   private def määritäToiminta(): Unit = {
-    if (ahkeruudet.size == 0) {
+    if (ahkeruudet.size != 0) {
       val lista = tk.kassa.työLista
       var ahk = ahkeruudet.map(_.getValue().##()/100.0).toVector
       var osuudet = sliderit.map(_.value/100.0).toVector
@@ -186,10 +186,12 @@ object Käyttöliittymä extends SimpleSwingApplication {
   
   private def alustaTyönjako() = {
     muutIkkunat.foreach(_.dispose)
+    poistaAhkeruudet()
+    poistaSliderit()
     val työIkkuna = new Frame()
     muutIkkunat += työIkkuna
     työIkkuna.title = "HALLINTA"
-    työIkkuna.size = new Dimension (300, 300)
+    työIkkuna.size = new Dimension (400, 400)
     työIkkuna.centerOnScreen()
     val sisältö = new BoxPanel(Orientation.Vertical)
     val scrollable = new ScrollPane(työLista)
@@ -212,11 +214,16 @@ object Käyttöliittymä extends SimpleSwingApplication {
         indeksi += 1
         val indeksiTässä = indeksi
         val sisäPaneeli = new BoxPanel(Orientation.Vertical)
+        sisäPaneeli.border = Swing.LineBorder(new Color(10,10,0), 1)
+        
         sisäPaneeli.contents += new TextArea(2,5) {
-          text = i(0).toString
+          text = i(0).toString + "\n" +
+          " Koko: " + i.foldLeft(0)(_ + _.koko)
           editable = false
           focusable = false
         }
+        
+        sisäPaneeli.contents += new Label("Osuus")
         val slideri = lisääSlider()
         sisäPaneeli.contents += slideri
         listenTo(slideri)
@@ -227,11 +234,13 @@ object Käyttöliittymä extends SimpleSwingApplication {
         }
         
         
-        val ahkMalli = new SpinnerNumberModel(10, 0, 200, 10)        
+        val ahkMalli = new SpinnerNumberModel(100, 0, 200, 10)        
         val spinneri = new JSpinner(ahkMalli)
         spinneri.setEditor(new JSpinner.DefaultEditor(spinneri))
-        sisäPaneeli.contents += new Label("Panostus")
-        sisäPaneeli.contents += Component.wrap(spinneri)
+        sisäPaneeli.contents += new BoxPanel(Orientation.Vertical) {
+          contents += new Label("Panostus")
+          contents += Component.wrap(spinneri)
+        }
         ahkeruudet += spinneri
         paneeli.contents += sisäPaneeli
       }
@@ -253,7 +262,7 @@ object Käyttöliittymä extends SimpleSwingApplication {
   private val sliderit: Buffer[Slider] = Buffer()
   private def lisääSlider():Slider = {
     val slider = new Slider {
-    min = 0
+    min = 1
     max = 100
     majorTickSpacing = 1
     orientation = Orientation.Vertical
@@ -263,6 +272,8 @@ object Käyttöliittymä extends SimpleSwingApplication {
   }
   private def poistaSliderit() = sliderit.clear()
   
+  
+  // Asettaa kaikki sliderit yhden muutoksen mukaan.
   private def asetaSlideri(i: Int, arvo: Int) = {
     val lista = sliderit.map(_.value).toArray.map(x => (false, x))
     lista(i) = (true, arvo)
@@ -274,7 +285,7 @@ object Käyttöliittymä extends SimpleSwingApplication {
     val loppuSumma = 100 - v.foldLeft(0)((a,x) => if (x._1) a + x._2 else a)
     val nyt = v.foldLeft(0)( (a, x) => if(!x._1) a + x._2 else a)
     val kerroin = {
-      if (nyt > 0) loppuSumma/nyt
+      if (nyt > 0) loppuSumma*1.0/nyt
       else 0
     }
     v.map(x => if (!x._1) (kerroin*x._2).toInt else x._2)
