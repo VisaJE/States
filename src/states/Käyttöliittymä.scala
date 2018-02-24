@@ -44,16 +44,24 @@ object Käyttöliittymä extends SimpleSwingApplication {
     })
   }
   
+  
 
   
-  private def määritäToiminta(työt: Vector[Double], ahk: Vector[Double]): Unit = {
-    require(työt.size == ahk.size)
-    toimi = Some(new Toiminta(työt, ahk, tk))
-  }
   private def määritäToiminta(): Unit = {
-    val vektori = Array.ofDim[Double](tk.kassa.työLista.size).map(_=>1.0).toVector
-    määritäToiminta(vektori, vektori)
+    if (ahkeruudet.size == 0) {
+      val lista = tk.kassa.työLista
+      var ahk = ahkeruudet.map(_.getValue().##()/100.0).toVector
+      var osuudet = sliderit.map(_.value/100.0).toVector
+      require(ahk.size == osuudet.size)
+      val uudet = lista.size - ahk.size
+      if (uudet > 0) {
+        ahk = ahk ++ Array.ofDim[Double](uudet).toVector
+        osuudet = osuudet ++ Array.ofDim[Double](uudet).toVector
+      }
+      toimi = Some(Toiminta(osuudet, ahk, tk))
+    }
   }
+
   
   
   val pelaajaNimi  = new TextArea(1, 5) {
@@ -72,10 +80,11 @@ object Käyttöliittymä extends SimpleSwingApplication {
     val karttaNappi = new Button("KARTTA")
     val työNappi = new Button("HALLINTA")
     val päättöNappi = Button("Päätä vuoro") {
+        määritäToiminta()
         peliSäie.interrupt()
       }
     val päättö = new BoxPanel(Orientation.Horizontal) {
-        contents += päättöNappi 
+        contents += päättöNappi ,
       }
     val superNappiPaneeli = new BoxPanel(Orientation.Vertical)
     val nappiPaneeli = new BoxPanel(Orientation.Horizontal)
@@ -187,6 +196,7 @@ object Käyttöliittymä extends SimpleSwingApplication {
     sisältö.contents += scrollable
     työIkkuna.contents = sisältö
     työIkkuna.visible_=(true)
+    määritäToiminta()
   }
   
   
@@ -217,16 +227,25 @@ object Käyttöliittymä extends SimpleSwingApplication {
         }
         
         
-        val ahkMalli = new SpinnerNumberModel(1.0, 0.0, 2.0, 0.2)        
+        val ahkMalli = new SpinnerNumberModel(10, 0, 200, 10)        
         val spinneri = new JSpinner(ahkMalli)
         spinneri.setEditor(new JSpinner.DefaultEditor(spinneri))
         sisäPaneeli.contents += new Label("Panostus")
         sisäPaneeli.contents += Component.wrap(spinneri)
+        ahkeruudet += spinneri
         paneeli.contents += sisäPaneeli
       }
     }
     else paneeli.contents += new TextField("Töitä ei löydy!", 20)
     paneeli
+  }
+  
+  
+  // Työnjaon ahkeruuden hallintaan
+  private var ahkeruudet: Buffer[JSpinner] = Buffer()
+  
+  private def poistaAhkeruudet() = {
+    ahkeruudet.clear()
   }
   
   
@@ -299,6 +318,8 @@ object Käyttöliittymä extends SimpleSwingApplication {
     tk = null
     pelaajaNimi.text = "notaname"
     toimi = None
+    poistaAhkeruudet()
+    poistaSliderit()
     
   }
   
