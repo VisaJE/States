@@ -104,6 +104,7 @@ object Käyttöliittymä extends SimpleSwingApplication {
   reactions += {
     case ButtonClicked(`kassaNappi`) => alustaKassa()
     case ButtonClicked(`työNappi`) => alustaTyönjako()
+    case ButtonClicked(`karttaNappi`) => alustaKartta()
   }
   
   
@@ -292,8 +293,42 @@ object Käyttöliittymä extends SimpleSwingApplication {
   }
   
   
+  
+    // Kartta
+  private def alustaKartta() = {
+    muutIkkunat.foreach(_.dispose())
+    val karttaIkkuna = new Frame()
+    muutIkkunat += karttaIkkuna
+    karttaIkkuna.visible = true
+// EI toimi toivotusti    karttaIkkuna.centerOnScreen()
+    karttaIkkuna.minimumSize = new Dimension(500, 500)
+    karttaIkkuna.resizable = false
+    karttaIkkuna.title = "KARTTA"
+    
+    val karttaPaneeli = new BoxPanel(Orientation.Horizontal)
+    karttaIkkuna.contents = karttaPaneeli
+    val tietoKohta = new BoxPanel(Orientation.Vertical)
+    tietoKohta.contents += nullLaitosPaneeli
+    tietoKohta.border_=(Swing.LineBorder(new Color(100, 100, 100), 2))
+    
+    
+    // Väliaikainen kartta
+    val kartta = new BoxPanel(Orientation.Vertical)
+    karttaPaneeli.contents += kartta
+    for (i <- tk.kartta.laitokset) {
+      kartta.contents += Button("Laitos") {
+        tietoKohta.contents.clear()
+        tietoKohta.contents += laitosPaneeli(i)
+        tietoKohta.revalidate
+        tietoKohta.repaint
+      }
+    }
+    karttaPaneeli.contents += tietoKohta
+  }
+  
+  
   // Laitoksesta saatava info ja ostomahdollisuus paneelissa.
-  private def laitosPaneeli(laitos: Laitos) = {
+  private def laitosPaneeli(laitos: Laitos): Panel = {
     val paneeli = new BoxPanel(Orientation.Vertical)
     val omistaja = laitos.omistus
     paneeli.contents += new TextArea(2, 5) {
@@ -302,7 +337,7 @@ object Käyttöliittymä extends SimpleSwingApplication {
       focusable = false
       border = Swing.LineBorder(new Color(10,10,0),1)
     }
-    paneeli.contents += new TextArea(2,5) {
+    paneeli.contents += new TextArea(1,1) {
       editable = false
       focusable = false
       text = {
@@ -317,8 +352,21 @@ object Käyttöliittymä extends SimpleSwingApplication {
       paneeli.contents += Button("Osta") {
         if (!tk.osta(laitos)) {
           paneeli.contents += new TextField("Osto epäonnistui." , 20)
-          // Tänne vielä ikkunan päivitys
+          paneeli.revalidate
+          paneeli.repaint
         }
+        else alustaKartta()
+      }
+    }
+    paneeli
+  }
+  
+  private def nullLaitosPaneeli: Panel = {
+    new BoxPanel(Orientation.Horizontal) {
+      contents += new TextArea(5, 5) {
+        text = ""
+        editable = false
+        focusable = false
       }
     }
   }
