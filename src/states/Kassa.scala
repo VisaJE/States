@@ -54,20 +54,20 @@ class Kassa(val tuotteet: Buffer[Tuote] = Buffer(), val laitokset: Buffer[Laitos
   }
   
   
-  // Lajittelee laitosten työt vektoreihin.
+  // Lajittelee laitosten työt vektoreihin. For-loopin bugin takia samat työt
+  // etsitään aluksi tämäTyö listaan ja poistetaan sitten erikseen töistä.
   def työLista: Vector[Vector[Työ]] = {
-    val työt = laitokset.map(_.työt).flatten
+    var työt = laitokset.map(_.työt).flatten
     var result: Vector[Vector[Työ]] = Vector()
     while (työt.size != 0) {
       val eka = työt.head
       var tämäTyö = Vector(eka)
       työt -= eka
-      for (i <- työt) {
-        if (i.tyyppiVertaus(eka)) {
+      for (i <- työt
+          if (eka.tyyppiVertaus(i))) {       
           tämäTyö = tämäTyö :+ i
-          työt -= i
-        }
-      }
+          }
+      työt = työt.filterNot(_.tyyppiVertaus(eka))
       result = result :+ tämäTyö
     }
     result

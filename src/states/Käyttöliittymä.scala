@@ -324,6 +324,7 @@ object Käyttöliittymä extends SimpleSwingApplication {
       }
     }
     karttaPaneeli.contents += tietoKohta
+     
   }
   
   
@@ -342,7 +343,7 @@ object Käyttöliittymä extends SimpleSwingApplication {
       focusable = false
       text = {
         if (omistaja != None) {
-          "Omistaja: " + omistaja.get
+          "Omistettu."
         }
         else "Vapailla markkinoilla."
       }
@@ -471,9 +472,11 @@ object Käyttöliittymä extends SimpleSwingApplication {
     peliSäie.start()
   }
   
+  
+  var peli: Peli = null
   class PeliSäie extends Runnable {
     def run = {
-      new Peli(nimiLista, tekoälyjä)
+      peli = new Peli(nimiLista, tekoälyjä)
     }
   }
   

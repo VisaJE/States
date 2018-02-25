@@ -47,7 +47,8 @@ class Peli(ihmiset: Buffer[String], tekoälyt: Int) {
   
           // Otetaan talteen kaikki pelanneet
   private val pelaajatAlussa = pelaajat
-
+  
+  
   private var voittaja: Option[Pelaaja] = None
   private var voitettu = false
   
@@ -71,10 +72,7 @@ class Peli(ihmiset: Buffer[String], tekoälyt: Int) {
       pelaajat.foreach(toiminnat += _.vuoro)
       toiminnat.foreach(_.suorita())
       loikkaukset()
-      
-      
-    // TESTI 
-    pelaajat.foreach((x: Pelaaja) => println(x+ ": " + x.tk.tyytyväisyys + "\n" + x.tk.populaatio + "\n" + x.tk.kassa + "\n"))     
+       
     }
   }
   
