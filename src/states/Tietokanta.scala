@@ -59,8 +59,7 @@ class Tietokanta(val kassa: Kassa, val kartta: Kartta, var populaatio: Int = 0) 
   }
   
   
-  private def osuus(a: Double): Int = (a*populaatio).toInt
-  private def osuus(a: Double, b: Int) = (a*b).toInt
+  private def osuus(a: Double): Int = round(a*populaatio).toInt
   
   // Skaalaa halutut arvot siten, että ne summautuvat ykköseksi.
   private def suhteuta(v: Array[(Boolean, Double)]) = {
@@ -87,8 +86,10 @@ class Tietokanta(val kassa: Kassa, val kartta: Kartta, var populaatio: Int = 0) 
       var kokoLista = Array.ofDim[Int](v.size)
       // Pari on true, mikäli arvo saa vielä muuttua.
       var osuusLista = v.map((true, _)).toArray
-      while (vapaana > 0 && osuusLista.forall(_._1)) {
+      while (vapaana > 0 && osuusLista.exists(_._1)) {
         osuusLista = suhteuta(osuusLista)
+        println("osuudet")
+        osuusLista.foreach(println(_))
         kokoLista = osuusLista.map((x: (Boolean, Double)) => osuus(x._2))
         for (i <- 0 until osuusLista.size) {
           val vapaat = vapaatPaikat(työt(i))

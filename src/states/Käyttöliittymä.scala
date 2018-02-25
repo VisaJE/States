@@ -35,7 +35,7 @@ object Käyttöliittymä extends SimpleSwingApplication {
   
   def vuoro(tiet: Tietokanta, nimi: String) = {
     tk = tiet
-    SwingUtilities.invokeAndWait(new Runnable() {
+    SwingUtilities.invokeLater(new Runnable() {
       def run() = {    
         pelaajaNimi.text = nimi
         alustaPääPaneeli()
@@ -78,11 +78,12 @@ object Käyttöliittymä extends SimpleSwingApplication {
   // Napit pelin pääikkunaan
     val kassaNappi = new Button("KASSA")
     val karttaNappi = new Button("KARTTA")
-    val työNappi = new Button("HALLINTA")
+    val työNappi = new Button("HALLINTA") 
     val päättöNappi = Button("Päätä vuoro") {
         määritäToiminta()
         peliSäie.interrupt()
       }
+    päättöNappi.background = new Color(200, 100,100)
     val päättö = new BoxPanel(Orientation.Horizontal) {
         contents += päättöNappi ,
       }
@@ -103,7 +104,10 @@ object Käyttöliittymä extends SimpleSwingApplication {
   nappiPaneeli.contents.foreach(listenTo(_))  
   reactions += {
     case ButtonClicked(`kassaNappi`) => alustaKassa()
-    case ButtonClicked(`työNappi`) => alustaTyönjako()
+    case ButtonClicked(`työNappi`) => {
+      päättöNappi.background = new Color(100,200,110)
+      alustaTyönjako()
+    }
     case ButtonClicked(`karttaNappi`) => alustaKartta()
   }
   

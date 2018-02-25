@@ -16,7 +16,7 @@ class Peli(ihmiset: Buffer[String], tekoälyt: Int) {
   
   // Määritetään laitokset ja niiden parametrit.
   private val peltoteho = 6
-  private val peltoja = satunnainen(10) + 5
+  private val peltoja = satunnainen(5) + 3
   for (i <- 1 to peltoja) {
     val joku = satunnainen(100)
     kartta.lisää(new Pelto(Vector(Raha(joku+20)), 20 + joku/3, peltoteho))
@@ -24,7 +24,7 @@ class Peli(ihmiset: Buffer[String], tekoälyt: Int) {
   
   
   private val kaivosteho = 10
-  private val kaivoksia = satunnainen(8) + 2
+  private val kaivoksia = satunnainen(3) + 1
   for (i <- 1 to kaivoksia) {
     val joku = satunnainen(200)
     kartta.lisää(new Kaivos(Vector(Raha(joku+50)), 10 + joku, kaivosteho))

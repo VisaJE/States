@@ -63,7 +63,7 @@ class Nollatyö(koko: Int) extends Työ(koko = koko) {
 
 class Kaivostyö(koko: Int, teho: Int) extends Työ(tuotto = Vector(new Rauta(teho)), koko = koko) {
   
-    def tyyppiVertaus(a: Työ) = {
+  def tyyppiVertaus(a: Työ) = {
     a match {
       case a: Kaivostyö => true
       case _ => false

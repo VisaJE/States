@@ -19,7 +19,7 @@ class Tekoäly(tk: Tietokanta) extends Pelaaja(tk) {
     // Testailijalle
     //new Toiminta(Vector(1.0), Vector(1.5), tk)
     // Peli-luokalle
-    Thread.sleep(2000)
+    Thread.sleep(500)
     new Ohita(tk)
   }
   override def toString =  "Botti"
@@ -34,7 +34,7 @@ class Epätekoäly(tk: Tietokanta, nimi: String) extends Pelaaja(tk) {
   def vuoro: Vuoro = {
     Käyttöliittymä.vuoro(tk, nimi)
     try {
-      Thread.sleep(600000)
+      Thread.sleep(60000)
     } catch {
       case e: InterruptedException => {}
     }
