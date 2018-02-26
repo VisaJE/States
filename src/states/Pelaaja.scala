@@ -23,7 +23,9 @@ class Tekoäly(tk: Tietokanta) extends Pelaaja(tk) {
     new Ohita(tk)
   }
   override def toString =  "Botti"
-  def voittoIlmoitus(voittaja: Option[Pelaaja]) = {}
+  def voittoIlmoitus(voittaja: Option[Pelaaja]) = {
+    Käyttöliittymä.voittoIlmoitus(voittaja)
+  }
   
 }
 

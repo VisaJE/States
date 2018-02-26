@@ -7,10 +7,11 @@ import javax.swing.SpinnerNumberModel
 import javax.swing.JSpinner
 import javax.swing.Timer
 import javax.swing.JTextField
+import javax.swing.JScrollPane
 import scala.collection.mutable.Buffer
-import scala.swing.event.ButtonClicked
 import scala.concurrent.Future
 import javax.swing.SwingUtilities
+import java.awt.Graphics2D
 
 
 
@@ -304,14 +305,15 @@ object Käyttöliittymä extends SimpleSwingApplication {
     val karttaIkkuna = new Frame()
     muutIkkunat += karttaIkkuna
     karttaIkkuna.visible = true
-// EI toimi toivotusti    karttaIkkuna.centerOnScreen()
-    karttaIkkuna.minimumSize = new Dimension(500, 500)
-    karttaIkkuna.resizable = false
+    karttaIkkuna.minimumSize = new Dimension(800, 500)
+    karttaIkkuna.resizable = true
     karttaIkkuna.title = "KARTTA"
     
     val karttaPaneeli = new BoxPanel(Orientation.Horizontal)
     karttaIkkuna.contents = karttaPaneeli
     val tietoKohta = new BoxPanel(Orientation.Vertical)
+    tietoKohta.preferredSize = new Dimension(500, 100)
+    tietoKohta.contents += miniKartta
     tietoKohta.contents += nullLaitosPaneeli
     tietoKohta.border_=(Swing.LineBorder(new Color(100, 100, 100), 2))
     
@@ -322,13 +324,21 @@ object Käyttöliittymä extends SimpleSwingApplication {
     for (i <- tk.kartta.laitokset) {
       kartta.contents += Button("Laitos") {
         tietoKohta.contents.clear()
+        tietoKohta.contents += miniKartta
         tietoKohta.contents += laitosPaneeli(i)
         tietoKohta.revalidate
         tietoKohta.repaint
       }
     }
+    // Kuvallinen kartta
+    val scrollable = new JScrollPane(kkartta) {
+      setMinimumSize(new Dimension(550, 500))
+    }
+    karttaPaneeli.contents += Component.wrap(scrollable)
     karttaPaneeli.contents += tietoKohta
-     
+    karttaPaneeli.revalidate
+    karttaPaneeli.repaint
+    karttaIkkuna.centerOnScreen()
   }
   
   
@@ -336,15 +346,19 @@ object Käyttöliittymä extends SimpleSwingApplication {
   private def laitosPaneeli(laitos: Laitos): Panel = {
     val paneeli = new BoxPanel(Orientation.Vertical)
     val omistaja = laitos.omistus
-    paneeli.contents += new TextArea(2, 5) {
+    paneeli.contents += new TextArea(2, 3) {
       text = laitos.toString
       editable = false
       focusable = false
       border = Swing.LineBorder(new Color(10,10,0),1)
+      lineWrap = true
+      wordWrap = true
     }
-    paneeli.contents += new TextArea(1,1) {
+    paneeli.contents += new TextArea(1,3) {
       editable = false
       focusable = false
+      lineWrap = true
+      wordWrap = true
       text = {
         if (omistaja != None) {
           "Omistettu."
@@ -356,7 +370,8 @@ object Käyttöliittymä extends SimpleSwingApplication {
       paneeli.contents += new TextField(laitos.hintaString, 20)
       paneeli.contents += Button("Osta") {
         if (!tk.osta(laitos)) {
-          paneeli.contents += new TextField("Osto epäonnistui." , 20)
+          paneeli.contents.clear()
+          paneeli.contents += new TextField("Resurssit eivät riitä." , 20)
           paneeli.revalidate
           paneeli.repaint
         }
@@ -368,13 +383,14 @@ object Käyttöliittymä extends SimpleSwingApplication {
   
   private def nullLaitosPaneeli: Panel = {
     new BoxPanel(Orientation.Horizontal) {
-      contents += new TextArea(5, 5) {
+      contents += new TextArea(2, 2) {
         text = ""
         editable = false
         focusable = false
       }
     }
   }
+  
   
   
   def päätäVuoro() = {
@@ -471,16 +487,26 @@ object Käyttöliittymä extends SimpleSwingApplication {
   
   
   private var peliSäie: Thread = null
+  
+  
   private def aloita(): Unit = {
     peliSäie = new Thread(new PeliSäie)
     peliSäie.start()
+    
   }
   
   
-  var peli: Peli = null
+  private var peli: Peli = null
+  private var kkartta: java.awt.Component = null
+  private var miniKartta: swing.Component = null
+  
   class PeliSäie extends Runnable {
     def run = {
       peli = new Peli(nimiLista, tekoälyjä)
+      val kartoittaja = (new Kartoittaja(peli.kartta))
+      miniKartta = kartoittaja.getMini
+      kkartta = kartoittaja.getKartta
+      peli.aloita()
     }
   }
   

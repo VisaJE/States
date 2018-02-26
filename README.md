@@ -10,3 +10,4 @@
 *  Tuotteiden tyytyväisyysfunktio palauttaa kansan kokoon suhteutetun arvon, joka on negatiivinen, jos tuotteen määrä ei riitä, ja muuten positiivinen. Tarpeen ja tyytyväisyyden funktiot siis toteutuvat samassa metodissa.
 *  Käyttöliittymän ja pelin väliin lisätty pelaaja-luokka, johon myös tekoäly kuuluu. Peli antaa ihmispelaajan toimia pelaaja-luokan kautta ja tallentaa kunkin vuorot suoritettavaksi.
 *  Vuorojen tallentamiseksi on olemassa vuoro-tyyppi. Tähän voisi myös lisätä ainakin vuoron ohittamisen vaihtoehdon, mutta myös mahdolliset hyökkäykset jne. kehitysjutut.
+*  Kartoittaja luo kartan paneelin hakemalla kartat-kansiosta kartan ja asettamalla sille parametrinä annetun Kartta-olion laitokset kuvakkeineen.

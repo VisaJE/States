@@ -105,8 +105,11 @@ class Peli(ihmiset: Buffer[String], tekoälyt: Int) {
   }
   
   // Aloitus
-  while (!voitettu) {
-    vuoroilija()
+  
+  def aloita() = {
+    while (!voitettu) {
+      vuoroilija()
+    }
   }
 }
 

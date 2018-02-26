@@ -88,8 +88,6 @@ class Tietokanta(val kassa: Kassa, val kartta: Kartta, var populaatio: Int = 0) 
       var osuusLista = v.map((true, _)).toArray
       while (vapaana > 0 && osuusLista.exists(_._1)) {
         osuusLista = suhteuta(osuusLista)
-        println("osuudet")
-        osuusLista.foreach(println(_))
         kokoLista = osuusLista.map((x: (Boolean, Double)) => osuus(x._2))
         for (i <- 0 until osuusLista.size) {
           val vapaat = vapaatPaikat(työt(i))
