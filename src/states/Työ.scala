@@ -15,11 +15,13 @@ abstract class Työ(val kulutus: Vector[Tuote] = Vector(), val tuotto: Vector[Tu
   val ahkeruusEksponentti = 1.5
   def toimi(ahkeruus: Double, kassa: Kassa, määrä: Int): Int = {
     val indeksi = (määrä*ahkeruus).toInt
-    for (i <- 1 to indeksi) {
-      if (kassa.kuluta(kulutus)) {
-        kassa.lisää(tuotto)   
+    breakable  {
+      for (i <- 1 to indeksi) {
+        if (kassa.kuluta(kulutus)) {
+          kassa.lisää(tuotto)   
+        }
+        else break
       }
-      else break
     }
     -(määrä*pow(ahkeruus,ahkeruusEksponentti)).toInt
   }
@@ -70,4 +72,20 @@ class Kaivostyö(koko: Int, teho: Int) extends Työ(tuotto = Vector(new Rauta(te
     }
   }
     override def toString = " Kaivostyöt"
+}
+
+
+class Tehtailu(koko: Int, teho: Int, raudanTarve: Int) extends Työ(tuotto = Vector(new Työkalut(teho)),
+    kulutus = Vector(new Rauta(raudanTarve)), koko = koko) {
+  
+  
+  def tyyppiVertaus(a: Työ) = {
+    a match {
+      case a: Tehtailu => true
+      case _ => false
+    }
+  }
+  
+  
+  override def toString = " Raudan jalostus"
 }

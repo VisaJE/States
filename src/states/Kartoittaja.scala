@@ -10,7 +10,7 @@ import java.awt.Image
 
 
 class Kartoittaja(k: Kartta) {
-  private val path = "kartat/testikartta.png"
+  private val path = "kartat/ruohoa.png"
   private val kartta = ImageIO.read(new File(path))
   private val icon = new ImageIcon(path)
   private val miniIcon = kartta.getScaledInstance(100, 100, Image.SCALE_DEFAULT)

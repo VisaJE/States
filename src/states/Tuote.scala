@@ -100,7 +100,7 @@ object Raha {
 
 class Vilja(m: Int = 0) extends Tuote(2, m) {
   
-  val tarve = 2
+  val tarve = 4
   private val tyytyväisyysKerroin = 1.0
   
   
@@ -155,6 +155,29 @@ class Rauta(m: Int = 0) extends Tuote(5, m) {
   override def toString = {
     "Rautaa " + määrä + " leiviskää"
   }  
+}
+
+
+class Työkalut(m: Int = 0) extends Tuote(20, m) {
+  val tarve = 0
+  private val tyytyväisyysKerroin = 0.5
+  
+  
+  def tarveFunktio(pop: Int) = {
+    tyytyväisyysKerroin * pop
+  }
+  
+  
+  def tyyppiVertaus(a: Tuote) = {
+    a match {
+      case a: Työkalut => true
+      case _ => false
+    }
+  }
+  
+  def copy(m: Int) = new Työkalut(m)
+  
+  override def toString = "Kaikenkaltaisia työkaluja " + määrä + " kappaletta."
 }
 
 

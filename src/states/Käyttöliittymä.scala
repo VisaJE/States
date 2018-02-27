@@ -84,7 +84,7 @@ object Käyttöliittymä extends SimpleSwingApplication {
         määritäToiminta()
         peliSäie.interrupt()
       }
-    päättöNappi.background = new Color(200, 100,100)
+    
     val päättö = new BoxPanel(Orientation.Horizontal) {
         contents += päättöNappi ,
       }
@@ -134,7 +134,8 @@ object Käyttöliittymä extends SimpleSwingApplication {
   
   private def alustaPääPaneeli() = {
     peliPaneeli.contents.clear()
-      peliIkkuna.size = new Dimension(460, 460)  
+      peliIkkuna.size = new Dimension(460, 460) 
+      päättöNappi.background = new Color(200, 100,100)
       peliPaneeli.contents += nimiPaneeli
       peliPaneeli.contents += teeTietoPaneeli
       peliPaneeli.contents += napit
@@ -172,7 +173,7 @@ object Käyttöliittymä extends SimpleSwingApplication {
           }  
           panel.contents += field
           if (!i.tyyppiVertaus(verrokki)) {
-            val malli = new SpinnerNumberModel(i.määrä/10, 0, i.määrä, 10)        
+            val malli = new SpinnerNumberModel(i.määrä/10, 0, i.määrä, i.määrä/10+1)        
             val spinneri = new JSpinner(malli)
             
             panel.contents += Component.wrap(spinneri)
@@ -270,7 +271,7 @@ object Käyttöliittymä extends SimpleSwingApplication {
     val slider = new Slider {
     min = 1
     max = 100
-    majorTickSpacing = 1
+    majorTickSpacing = 2
     orientation = Orientation.Vertical
     }
     sliderit += slider
@@ -350,7 +351,7 @@ object Käyttöliittymä extends SimpleSwingApplication {
       text = laitos.toString
       editable = false
       focusable = false
-      border = Swing.LineBorder(new Color(10,10,0),1)
+      border = Swing.LineBorder(new Color(0,0,0),1)
       lineWrap = true
       wordWrap = true
     }
@@ -359,15 +360,22 @@ object Käyttöliittymä extends SimpleSwingApplication {
       focusable = false
       lineWrap = true
       wordWrap = true
+      border = Swing.LineBorder(new Color(0,0,0), 1)
       text = {
         if (omistaja != None) {
-          "Omistettu."
+          "Ei myynnissä."
         }
         else "Vapailla markkinoilla."
       }
     }
     if (omistaja == None)  {
-      paneeli.contents += new TextField(laitos.hintaString, 20)
+      paneeli.contents += new TextArea(laitos.hintaString) {
+        lineWrap = true
+        wordWrap = true
+        editable = false
+        focusable = false
+        border = Swing.LineBorder(new Color(0,0,0), 1)
+      }
       paneeli.contents += Button("Osta") {
         if (!tk.osta(laitos)) {
           paneeli.contents.clear()
@@ -387,6 +395,7 @@ object Käyttöliittymä extends SimpleSwingApplication {
         text = ""
         editable = false
         focusable = false
+        border = Swing.LineBorder(new Color(0,0,0), 1)
       }
     }
   }

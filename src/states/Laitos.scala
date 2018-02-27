@@ -50,3 +50,9 @@ class Pelto(hinta: Vector[Tuote], koko: Int, teho: Int) extends Laitos(hinta, Ve
 class Kaivos(hinta: Vector[Tuote], koko: Int, teho: Int) extends Laitos(hinta, Vector(new Kaivostyö(koko, teho))) {
   override def toString = "Kaivos ja " + koko + " hakkua."
 }
+
+
+class Tehdas(hinta: Vector[Tuote], koko: Int, teho: Int, raudanTarve: Int) extends Laitos(hinta,
+    Vector(new Tehtailu(koko, teho, raudanTarve))) {
+  override def toString = koko + " työläisen tehdas"
+}

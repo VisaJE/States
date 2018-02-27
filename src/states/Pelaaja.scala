@@ -36,7 +36,7 @@ class Epätekoäly(tk: Tietokanta, nimi: String) extends Pelaaja(tk) {
   def vuoro: Vuoro = {
     Käyttöliittymä.vuoro(tk, nimi)
     try {
-      Thread.sleep(60000)
+      Thread.sleep(70000)
     } catch {
       case e: InterruptedException => {}
     }
