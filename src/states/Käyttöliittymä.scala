@@ -81,8 +81,28 @@ object Käyttöliittymä extends SimpleSwingApplication {
     val karttaNappi = new Button("KARTTA")
     val työNappi = new Button("HALLINTA") 
     val päättöNappi = Button("Päätä vuoro") {
-        määritäToiminta()
-        peliSäie.interrupt()
+        if (sliderit.size == 0) {
+          val huom = new Frame() {
+            contents = new BoxPanel(Orientation.Vertical) {
+            contents += new TextField("Et ole määrittänyt työnjakoa!")
+            contents += new BoxPanel(Orientation.Horizontal) {
+              contents += Button("Skippaan") {
+                peliSäie.interrupt()
+                }
+              contents += Button("Oho") {
+                muutIkkunat.foreach(_.dispose())
+                }
+              }
+            }
+            centerOnScreen()
+            visible = true
+          }
+          muutIkkunat += huom
+        }
+        else {
+          määritäToiminta()
+          peliSäie.interrupt()
+        }
       }
     
     val päättö = new BoxPanel(Orientation.Horizontal) {
@@ -216,6 +236,7 @@ object Käyttöliittymä extends SimpleSwingApplication {
     val työnJako = Array.ofDim[Int](lista.size)
     val paneeli = new BoxPanel(Orientation.Horizontal)
     var indeksi = -1
+    var unohdaMuut = false
     if (lista.size > 0) {
       for (i <- lista) {
         indeksi += 1
@@ -236,7 +257,11 @@ object Käyttöliittymä extends SimpleSwingApplication {
         listenTo(slideri)
         reactions += {
           case ValueChanged(`slideri`) => {
-            asetaSlideri(indeksiTässä, slideri.value)
+            if (!unohdaMuut) {
+              unohdaMuut = true
+              asetaSlideri(indeksiTässä, slideri.value)
+              unohdaMuut = false
+            }
           }
         }
         
@@ -275,6 +300,7 @@ object Käyttöliittymä extends SimpleSwingApplication {
     orientation = Orientation.Vertical
     }
     sliderit += slider
+    sliderit.foreach(_.value = 100/sliderit.size)
     slider
   }
   private def poistaSliderit() = sliderit.clear()
@@ -293,9 +319,9 @@ object Käyttöliittymä extends SimpleSwingApplication {
     val nyt = v.foldLeft(0)( (a, x) => if(!x._1) a + x._2 else a)
     val kerroin = {
       if (nyt > 0) loppuSumma*1.0/nyt
-      else 0
+      else 0.0
     }
-    v.map(x => if (!x._1) (kerroin*x._2).toInt else x._2)
+    v.map(x => if (!x._1) scala.math.round((kerroin*x._2)).toInt else x._2)
   }
   
   
@@ -383,7 +409,12 @@ object Käyttöliittymä extends SimpleSwingApplication {
           paneeli.revalidate
           paneeli.repaint
         }
-        else alustaKartta()
+        else {
+          paneeli.contents.clear()
+          paneeli.contents += new TextField("Ostettu!", 20)
+          paneeli.revalidate
+          paneeli.repaint
+        }
       }
     }
     paneeli
@@ -547,6 +578,9 @@ object Käyttöliittymä extends SimpleSwingApplication {
       }
       val napit = new BoxPanel(Orientation.Horizontal)
       napit.contents += Button("Alusta") {
+        muutIkkunat.foreach(_.dispose())
+        tk = null
+        toimi = None
         ilmoitettu = false
         alustaAlkuPaneeli()
       }
