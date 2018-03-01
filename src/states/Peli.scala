@@ -23,7 +23,7 @@ class Peli(ihmiset: Buffer[String], tekoälyt: Int) {
   }
   
   
-  private val kaivosteho = 5
+  private val kaivosteho = 3
   private val kaivoksia = satunnainen(3) + 1*(ihmiset.size+tekoälyt)
   for (i <- 1 to kaivoksia) {
     val joku = satunnainen(200)
@@ -59,7 +59,6 @@ class Peli(ihmiset: Buffer[String], tekoälyt: Int) {
   pelaajat = pelaajat ++ {
       for (i <- ihmiset) yield new Epätekoäly(new Tietokanta(
           new Kassa(aloitusesineet), kartta, alkupopulaatio), i)}.toVector
-  
           // Otetaan talteen kaikki pelanneet
   private val pelaajatAlussa = pelaajat
   
@@ -74,11 +73,11 @@ class Peli(ihmiset: Buffer[String], tekoälyt: Int) {
   
       
       
-  def vuoroilija() = {      
+  def vuoroilija() = {
     pelaajat = järjestys(pelaajat)
     if (pelaajat.size <= 1) {
       pelaajat.foreach( (x:Pelaaja) =>voittaja = Some(x))
-      pelaajatAlussa.foreach(_.voittoIlmoitus(voittaja)) 
+      pelaajatAlussa.foreach(_.voittoIlmoitus(voittaja, vuoroNumero)) 
       voitettu = true
       }
     if (!voitettu) {
@@ -87,7 +86,6 @@ class Peli(ihmiset: Buffer[String], tekoälyt: Int) {
       pelaajat.foreach(toiminnat += _.vuoro)
       toiminnat.foreach(_.suorita())
       loikkaukset()
-       
     }
   }
   

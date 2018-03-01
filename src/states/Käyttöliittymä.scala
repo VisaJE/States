@@ -296,7 +296,7 @@ object Käyttöliittymä extends SimpleSwingApplication {
     val slider = new Slider {
     min = 1
     max = 100
-    majorTickSpacing = 2
+    majorTickSpacing = 4
     orientation = Orientation.Vertical
     }
     sliderit += slider
@@ -423,7 +423,7 @@ object Käyttöliittymä extends SimpleSwingApplication {
   private def nullLaitosPaneeli: Panel = {
     new BoxPanel(Orientation.Horizontal) {
       contents += new TextArea(2, 2) {
-        text = ""
+        text = tk.kassa.toString
         editable = false
         focusable = false
         border = Swing.LineBorder(new Color(0,0,0), 1)
@@ -554,26 +554,29 @@ object Käyttöliittymä extends SimpleSwingApplication {
   private var ilmoitettu = false
   
   // Erillinen metodi pääsäikeen valintaan.
-  def voittoIlmoitus(v: Option[Pelaaja]) = {
+  def voittoIlmoitus(v: Option[Pelaaja], vuoro: Int) = {
     SwingUtilities.invokeLater(new Runnable() {
       def run() = {    
-        säikeelläIlmoitus(v)
+        säikeelläIlmoitus(v, vuoro)
       }
     })
   }
   
   
-  private def säikeelläIlmoitus(voittaja: Option[Pelaaja]) = {
+  private def säikeelläIlmoitus(voittaja: Option[Pelaaja], vuoro: Int) = {
     if (!ilmoitettu) {
       peliPaneeli.contents.clear()
       peliIkkuna.size = new Dimension(200, 150)
       val teksti = {
-        if (voittaja == None) "Tasapeli. (Kaikki oli huonoja.)" 
-        else voittaja.get.toString + " voittaa!"
+        if (voittaja == None) "Tasapeli. (Kaikki oli huonoja.)\nVuoroja pelattu " +
+        vuoro +"."
+        else voittaja.get.toString + " voittaa!\nVuoroja pelattu " + vuoro + "."
       }
-      peliPaneeli.contents += new TextField(teksti, 25) {
+      peliPaneeli.contents += new TextArea(teksti) {
         editable = false
         focusable = false
+        wordWrap = true
+        lineWrap = true
         text = teksti
       }
       val napit = new BoxPanel(Orientation.Horizontal)

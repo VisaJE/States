@@ -29,8 +29,9 @@ class Tietokanta(val kassa: Kassa, val kartta: Kartta, var populaatio: Int = 0) 
   
   
   def osta(laitos: Laitos): Boolean = {
-    if (kassa.kuluta(laitos.hinta)) {
+    if (kassa.riittääkö(laitos.hinta)) {
       if (laitos.osta(this)) {
+        kassa.kuluta(laitos.hinta)
         kassa.laitokset += laitos
         true
       }
@@ -84,8 +85,9 @@ class Tietokanta(val kassa: Kassa, val kartta: Kartta, var populaatio: Int = 0) 
     var vapaana  = populaatio
     if (v.size != 0) { 
       var kokoLista = Array.ofDim[Int](v.size)
-      // Pari on true, mikäli arvo saa vielä muuttua.
-      var osuusLista = v.map((true, _)).toArray
+      // Pari on true, mikäli arvo saa vielä muuttua. 
+      // Jos osuudeksi on määrätty 0, työtä ei tehdä missään tilanteessa.
+      var osuusLista = v.map(x => if (x == 0) (false, 0.0) else (true, x)).toArray
       while (vapaana > 0 && osuusLista.exists(_._1)) {
         osuusLista = suhteuta(osuusLista)
         kokoLista = osuusLista.map((x: (Boolean, Double)) => osuus(x._2))
