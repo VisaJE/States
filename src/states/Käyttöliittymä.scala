@@ -5,6 +5,7 @@ import scala.swing.event._
 import javax.swing.ImageIcon
 import javax.swing.SpinnerNumberModel
 import javax.swing.JSpinner
+import javax.swing.JLabel
 import javax.swing.Timer
 import javax.swing.JTextField
 import javax.swing.JScrollPane
@@ -12,7 +13,8 @@ import scala.collection.mutable.Buffer
 import scala.concurrent.Future
 import javax.swing.SwingUtilities
 import java.awt.Graphics2D
-
+import java.io.File
+import javax.imageio.ImageIO
 
 
 object Käyttöliittymä extends SimpleSwingApplication {
@@ -65,15 +67,47 @@ object Käyttöliittymä extends SimpleSwingApplication {
 
   
   
-  val pelaajaNimi  = new TextArea(1, 5) {
+  val pelaajaNimi  = new TextArea(1, 1) {
       editable = false
       focusable = false
     }
   pelaajaNimi.text = "notanimi"
   
   // Kertoo pelaavan pelaajan nimen.
-  val nimiPaneeli = new BoxPanel(Orientation.Vertical)
+  val nimiPaneeli = new BoxPanel(Orientation.Vertical) {
+    preferredSize = new Dimension(500, 10)
+  }
   nimiPaneeli.contents += pelaajaNimi
+  
+  
+  // Ajastin
+  val nauhaPath = "art/nauha.png"
+  
+  
+  def ajastin() = {
+      val kuva = new ImageIcon(nauhaPath) 
+    val paneeli = new BoxPanel(Orientation.Vertical) {
+      border = Swing.LineBorder(new Color(50,0,0), 1)
+    }
+    val pohja = new JScrollPane(new JLabel(kuva),
+        javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER, 
+        javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER
+        )
+    pohja.setPreferredSize(new Dimension(500, 50))
+    pohja.setMinimumSize(new Dimension(500, 50))
+    paneeli.contents += Component.wrap(pohja)
+    ajastus(pohja)
+    paneeli
+  }
+  
+  
+  def ajastus(s: JScrollPane) = {
+    val vp = s.getViewport()
+    val point = new Point(2000, 0)
+    vp.setViewPosition(point)
+    s.revalidate()
+    s.repaint()
+  }
   
   
   // Napit pelin pääikkunaan
@@ -157,6 +191,8 @@ object Käyttöliittymä extends SimpleSwingApplication {
       peliIkkuna.size = new Dimension(460, 460) 
       päättöNappi.background = new Color(200, 100,100)
       peliPaneeli.contents += nimiPaneeli
+      peliPaneeli.contents += ajastin
+      peliPaneeli.contents += new BoxPanel(Orientation.Vertical)
       peliPaneeli.contents += teeTietoPaneeli
       peliPaneeli.contents += napit
       peliIkkuna.centerOnScreen()
