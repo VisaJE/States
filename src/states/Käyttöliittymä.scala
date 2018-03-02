@@ -15,6 +15,7 @@ import javax.swing.SwingUtilities
 import java.awt.Graphics2D
 import java.io.File
 import javax.imageio.ImageIO
+import java.util.concurrent._
 
 
 object Käyttöliittymä extends SimpleSwingApplication {
@@ -67,7 +68,7 @@ object Käyttöliittymä extends SimpleSwingApplication {
 
   
   
-  val pelaajaNimi  = new TextArea(1, 1) {
+  val pelaajaNimi  = new TextArea() {
       editable = false
       focusable = false
     }
@@ -75,7 +76,7 @@ object Käyttöliittymä extends SimpleSwingApplication {
   
   // Kertoo pelaavan pelaajan nimen.
   val nimiPaneeli = new BoxPanel(Orientation.Vertical) {
-    preferredSize = new Dimension(500, 10)
+    maximumSize = new Dimension(600, 10)
   }
   nimiPaneeli.contents += pelaajaNimi
   
@@ -85,7 +86,10 @@ object Käyttöliittymä extends SimpleSwingApplication {
   
   
   def ajastin() = {
-      val kuva = new ImageIcon(nauhaPath) 
+    val img = ImageIO.read(new File(nauhaPath))
+    val leveys = peliPaneeli.size.getWidth
+    val kuva = new ImageIcon(img.getScaledInstance((leveys*3).toInt+7,
+          30, java.awt.Image.SCALE_SMOOTH)) 
     val paneeli = new BoxPanel(Orientation.Vertical) {
       border = Swing.LineBorder(new Color(50,0,0), 1)
     }
@@ -93,20 +97,50 @@ object Käyttöliittymä extends SimpleSwingApplication {
         javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER, 
         javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER
         )
-    pohja.setPreferredSize(new Dimension(500, 50))
-    pohja.setMinimumSize(new Dimension(500, 50))
+    pohja.setPreferredSize(new Dimension(500, 30))
+    pohja.setMinimumSize(new Dimension(500, 30))
     paneeli.contents += Component.wrap(pohja)
     ajastus(pohja)
     paneeli
   }
   
   
+  val maksipiste = 460
+  val minipiste = 5
+  val vuoronaika = 120000
   def ajastus(s: JScrollPane) = {
     val vp = s.getViewport()
-    val point = new Point(2000, 0)
+    var point = new Point(maksipiste, 0)
+    val ex = new ScheduledThreadPoolExecutor(1)
     vp.setViewPosition(point)
-    s.revalidate()
-    s.repaint()
+ 
+    val ajastaja = new Runnable {
+      def run() = {   
+        vp.setViewPosition(point)
+        point = new Point((point.getX - 1).toInt, 0)
+        s.revalidate()
+        s.repaint()
+      }
+    }
+    val väliaika = 120000/(maksipiste-minipiste)
+    val toiminto = ex.scheduleAtFixedRate(ajastaja, väliaika, väliaika, TimeUnit.MILLISECONDS)
+    
+  }
+  
+  
+  // Taustakuva
+  val taustaPath = "art/tausta.png"
+  
+  val taustaPaneeli = new Component {
+    val taustakuva = ImageIO.read(new File(taustaPath)) 
+    override def paintComponent(g: Graphics2D) = {
+      g.drawImage(taustakuva,0,0, null)
+    }
+    val width = 600
+    val height = 200
+    minimumSize = new Dimension(width, height)
+    preferredSize = new Dimension(width, height)
+    maximumSize = new Dimension(width, height)
   }
   
   
@@ -189,10 +223,11 @@ object Käyttöliittymä extends SimpleSwingApplication {
   private def alustaPääPaneeli() = {
     peliPaneeli.contents.clear()
       peliIkkuna.size = new Dimension(460, 460) 
-      päättöNappi.background = new Color(200, 100,100)
-      peliPaneeli.contents += nimiPaneeli
+      päättöNappi.background = new Color(200, 100,100)  
+      peliPaneeli.contents += taustaPaneeli
+      
       peliPaneeli.contents += ajastin
-      peliPaneeli.contents += new BoxPanel(Orientation.Vertical)
+      peliPaneeli.contents += nimiPaneeli
       peliPaneeli.contents += teeTietoPaneeli
       peliPaneeli.contents += napit
       peliIkkuna.centerOnScreen()
