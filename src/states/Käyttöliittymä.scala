@@ -108,6 +108,7 @@ object Käyttöliittymä extends SimpleSwingApplication {
   val maksipiste = 460
   val minipiste = 5
   val vuoronaika = 120000
+  val ajastetut: Buffer[ScheduledFuture[_]] = Buffer()
   def ajastus(s: JScrollPane) = {
     val vp = s.getViewport()
     var point = new Point(maksipiste, 0)
@@ -124,7 +125,7 @@ object Käyttöliittymä extends SimpleSwingApplication {
     }
     val väliaika = 120000/(maksipiste-minipiste)
     val toiminto = ex.scheduleAtFixedRate(ajastaja, väliaika, väliaika, TimeUnit.MILLISECONDS)
-    
+    ajastetut += toiminto
   }
   
   
@@ -505,6 +506,7 @@ object Käyttöliittymä extends SimpleSwingApplication {
   
   
   def päätäVuoro() = {
+    ajastetut.foreach(_.cancel(false))
     muutIkkunat.foreach(frame => frame.dispose())
     tk = null
     pelaajaNimi.text = "notaname"
