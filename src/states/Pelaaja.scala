@@ -56,7 +56,7 @@ class Tekoäly(tk: Tietokanta) extends Pelaaja(tk) {
 // Testivaiheessa
 class Epätekoäly(tk: Tietokanta, nimi: String) extends Pelaaja(tk) {
   
-  val vuoronaika = 120000
+  val vuoronaika = 100000
   def vuoro: Vuoro = {
     Käyttöliittymä.vuoro(tk, nimi)
     var tulos: Vuoro = new Ohita(tk)
