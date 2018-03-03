@@ -17,7 +17,9 @@ abstract class Pelaaja(val tk: Tietokanta) {
 class Tekoäly(tk: Tietokanta) extends Pelaaja(tk) {
   def vuoro = {
     myyKaikki()
-    ostaPeltoja()
+    if (!ostaPeltoja()) {
+      ostaKaikkea()
+    }
     teeToiminta
     
   }
@@ -34,10 +36,10 @@ class Tekoäly(tk: Tietokanta) extends Pelaaja(tk) {
   }
   
   
-  private def ostaPeltoja() = {
+  private def ostaPeltoja(): Boolean = {
     val pellot = tk.kartta.laitokset.filter(x => x.työt.
         exists(y => new Viljely(0,0).tyyppiVertaus(y)))
-    pellot.foreach(tk.osta(_))
+    pellot.exists(tk.osta(_))
   }
   
   
@@ -50,6 +52,9 @@ class Tekoäly(tk: Tietokanta) extends Pelaaja(tk) {
     tk.kassa.tuotteet.find(_.tyyppiVertaus(Raha(0)))
   }
   
+  private def ostaKaikkea() = {
+    tk.kartta.laitokset.foreach(tk.osta(_))
+  }
 }
 
 
