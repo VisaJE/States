@@ -15,7 +15,7 @@ class Peli(ihmiset: Buffer[String], tekoälyt: Int) {
   
   
   // Määritetään laitokset ja niiden parametrit.
-  private val peltoteho = 6
+  private val peltoteho = Asetus.asInt("peltoteho")
   private val peltoja = satunnainen(4) + 2*(ihmiset.size+tekoälyt)
   for (i <- 1 to peltoja) {
     val joku = satunnainen(100)
@@ -23,7 +23,7 @@ class Peli(ihmiset: Buffer[String], tekoälyt: Int) {
   }
   
   
-  private val kaivosteho = 3
+  private val kaivosteho = Asetus.asInt("kaivosteho")
   private val kaivoksia = satunnainen(3) + 1*(ihmiset.size+tekoälyt)
   for (i <- 1 to kaivoksia) {
     val joku = satunnainen(200)
@@ -31,7 +31,7 @@ class Peli(ihmiset: Buffer[String], tekoälyt: Int) {
   }
   
   
-  private val tehdasteho = 1
+  private val tehdasteho = Asetus.asInt("tehdasteho")
   private val tehtaita = satunnainen(1) + 1*(ihmiset.size+tekoälyt)
   for (i <- 1 to tehtaita) {
     val joku = satunnainen(50)
@@ -47,7 +47,7 @@ class Peli(ihmiset: Buffer[String], tekoälyt: Int) {
   
   
   // Määritetään pelin alkutila
-  private val alkupopulaatio = 50
+  private val alkupopulaatio = Asetus.asInt("alkupopulaatio")
   def aloitusesineet: Buffer[Tuote] = Buffer(Raha(150), new Vilja(100))
   
   
@@ -103,8 +103,8 @@ class Peli(ihmiset: Buffer[String], tekoälyt: Int) {
   
   
   // Määrittää loikkaukset tyytyväisyyksien perusteella
-  val loikkausIndeksi = 1.0
-  val loikkausEksponentti = 2.0
+  val loikkausIndeksi = Asetus.as("loikkausindeksi")
+  val loikkausEksponentti = Asetus.as("loikkauseksponentti")
   
   
   private def loikkaukset() = {

@@ -66,8 +66,8 @@ abstract class Tuote(val arvo: Int, val määrä: Int) {
 
 class Raha(m: Int = 0) extends Tuote(1, m) {
   
-  val tarve = 0
-  private val tyytyväisyysKerroin = 0.2
+  val tarve = Asetus.asInt("traha")
+  private val tyytyväisyysKerroin = Asetus.as("tkraha")
   
   def tyyppiVertaus(a: Tuote) = {
     a match {
@@ -98,10 +98,10 @@ object Raha {
 }
 
 
-class Vilja(m: Int = 0) extends Tuote(2, m) {
+class Vilja(m: Int = 0) extends Tuote(Asetus.asInt("avilja"), m) {
   
-  val tarve = 4
-  private val tyytyväisyysKerroin = 1.0
+  val tarve = Asetus.asInt("tvilja")
+  private val tyytyväisyysKerroin = Asetus.as("tkvilja")
   
   
   def tarveFunktio(pop: Int) = {
@@ -130,10 +130,10 @@ class Vilja(m: Int = 0) extends Tuote(2, m) {
 }
 
 
-class Rauta(m: Int = 0) extends Tuote(5, m) {
+class Rauta(m: Int = 0) extends Tuote(Asetus.asInt("arauta"), m) {
  
-  val tarve = 0
-  private val tyytyväisyysKerroin = 0.1
+  val tarve = Asetus.asInt("trauta")
+  private val tyytyväisyysKerroin = Asetus.as("tkrauta")
   
   
   def tarveFunktio(pop: Int) = {
@@ -158,9 +158,10 @@ class Rauta(m: Int = 0) extends Tuote(5, m) {
 }
 
 
-class Työkalut(m: Int = 0) extends Tuote(20, m) {
-  val tarve = 0
-  private val tyytyväisyysKerroin = 0.5
+class Työkalut(m: Int = 0) extends Tuote(Asetus.asInt("atyökalut"), m) {
+  
+  val tarve = Asetus.asInt("ttyökalut")
+  private val tyytyväisyysKerroin = Asetus.as("tktyökalut")
   
   
   def tarveFunktio(pop: Int) = {

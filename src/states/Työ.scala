@@ -12,7 +12,7 @@ abstract class Työ(val kulutus: Vector[Tuote] = Vector(), val tuotto: Vector[Tu
   override def toString: String
   
   
-  val ahkeruusEksponentti = 1.5
+  val ahkeruusEksponentti = Asetus.as("ahkeruuseksponentti")
   def toimi(ahkeruus: Double, kassa: Kassa, määrä: Int): Int = {
     val indeksi = (määrä*ahkeruus).toInt
     breakable  {
@@ -49,7 +49,7 @@ class Viljely(koko: Int, teho: Int) extends Työ(tuotto = Vector(new Vilja(teho)
 
 class Nollatyö(koko: Int) extends Työ(koko = koko) {
 
-  val tyytyväisyysKerroin = -2
+  val tyytyväisyysKerroin = Asetus.asInt("tknollatyö")
   
   def tyyppiVertaus(a: Työ) = false
   // Palauttaa negatiivista tyytyväisyyttä.

@@ -107,7 +107,7 @@ object Käyttöliittymä extends SimpleSwingApplication {
   
   val maksipiste = 460
   val minipiste = 10
-  val vuoronaika = 100000
+  val vuoronaika = Asetus.asInt("vuoronaika")
   val ajastetut: Buffer[ScheduledFuture[_]] = Buffer()
   def ajastus(s: JScrollPane) = {
     val vp = s.getViewport()
@@ -366,7 +366,7 @@ object Käyttöliittymä extends SimpleSwingApplication {
   private val sliderit: Buffer[Slider] = Buffer()
   private def lisääSlider():Slider = {
     val slider = new Slider {
-    min = 1
+    min = 0
     max = 100
     majorTickSpacing = 4
     orientation = Orientation.Vertical

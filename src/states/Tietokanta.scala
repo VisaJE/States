@@ -6,9 +6,9 @@ import scala.math._
 class Tietokanta(val kassa: Kassa, val kartta: Kartta, var populaatio: Int = 0) {
   
   
-  val tappoIndeksi = 0.5
-  val resurssiTyytyväisyysKerroin = 1.0
-  val syntyvyysKerroin = 0.4
+  private val tappoIndeksi = Asetus.as("tappoindeksi")
+  private val resurssiTyytyväisyysKerroin = Asetus.as("resurssityytyväisyys")
+  private val syntyvyysKerroin = Asetus.as("syntyvyysindeksi")
   var tyytyväisyys: Int = 0
   
   
