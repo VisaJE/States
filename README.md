@@ -11,3 +11,5 @@
 *  Käyttöliittymän ja pelin väliin lisätty pelaaja-luokka, johon myös tekoäly kuuluu. Peli antaa ihmispelaajan toimia pelaaja-luokan kautta ja tallentaa kunkin vuorot suoritettavaksi.
 *  Vuorojen tallentamiseksi on olemassa vuoro-tyyppi. Tähän voisi myös lisätä ainakin vuoron ohittamisen vaihtoehdon, mutta myös mahdolliset hyökkäykset jne. kehitysjutut.
 *  Kartoittaja luo kartan paneelin hakemalla kartat-kansiosta kartan ja asettamalla sille parametrinä annetun Kartta-olion laitokset kuvakkeineen.
+*  Kartoittaja luo kuvakkeista satunnaisen kentän täyttämällä taulukkoon sekä pelin laitokset että koristeita, ja sijoittamalla taulukon sisällön vastaaviin kartan kohtiin.
+*  Taulukon kohtia kuvaa Blokki-luokka.
