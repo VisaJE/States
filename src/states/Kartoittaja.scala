@@ -1,7 +1,7 @@
 package states
 
 import scala.swing._
-import scala.swing.event._
+import java.awt.event._
 import javax.swing.ImageIcon
 import javax.imageio.ImageIO
 import java.io.File
@@ -12,7 +12,12 @@ import scala.util.Random
 
 
 class Kartoittaja(k: Kartta) {
-  private val path = "kartat/ruohoa.png"
+  val blokkeja = 10
+  val miniKoko = 100
+  val kartanKoko = 2000
+  
+  
+  private val path = "kartat/ruohoa2.png"
   private val peltop = "kartat/pelto.png"
   private val kaivosp = "kartat/kaivos.png"
   private val tehdasp = "kartat/tehdas.png"
@@ -22,9 +27,16 @@ class Kartoittaja(k: Kartta) {
   private val koristeet = Vector(
       "kartat/vaaleepläiskä.png",
       "kartat/laavaa.png",
+      "kartat/puu.png")
+      
+  private val roskat = Vector(
       "kartat/kivi.png",
       "kartat/lätäkkö.png",
-      "kartat/puu.png")
+      "kartat/mätäs.png",
+      "kartat/puska.png",
+      "kartat/kukka.png",
+      "kartat/sieni.png")
+      
   
   def rand = new Random()
   
@@ -37,24 +49,29 @@ class Kartoittaja(k: Kartta) {
       case _ => throw AsetusVirhe(message = "Kuva puuttuu laitokselle " +
           l.toString)
     }
-    ImageIO.read(new File(pth)).getScaledInstance(100, 100, Image.SCALE_DEFAULT)
+    ImageIO.read(new File(pth)).getScaledInstance(kartanKoko/blokkeja, kartanKoko/blokkeja, Image.SCALE_DEFAULT)
   }
   
   
   private def jokuKoriste = {
     ImageIO.read(new File(koristeet(rand.nextInt(koristeet.size))))
   }
+  private def jokuRoska = {
+    ImageIO.read(new File(roskat(rand.nextInt(roskat.size))))
+  }
   
   
   private def koristele() = {
      vapaat.foreach(a => if (rand.nextInt(10) % 5 == 0) a.lisääKoriste(jokuKoriste))
+     vapaat.foreach(a => if (rand.nextInt(10) % 2 == 0) a.lisääKoriste(jokuRoska))
   }
   
   // Kartta koostuu neliöistä, joihin voi sijoittua koristeita tai laitoksia.
-  private val blokit = Array.ofDim[Blokki](20, 20)
-  for (i <- 0 to 19) {
-    for (j <- 0 to 19) {
-      blokit(j)(i) = new Blokki(j*100, i*100)
+  
+  private val blokit = Array.ofDim[Blokki](blokkeja, blokkeja)
+  for (i <- 0 until blokkeja) {
+    for (j <- 0 until blokkeja) {
+      blokit(j)(i) = new Blokki(j*(kartanKoko/blokkeja), i*(kartanKoko/blokkeja))
     }
   }
   
@@ -97,6 +114,7 @@ class Kartoittaja(k: Kartta) {
   }
   
   // private val icon = new ImageIcon(path)
+  
   private def miniIcon = ImageIO.read(new File("pelikartta.png"))
   .getScaledInstance(100, 100, Image.SCALE_DEFAULT)
   
@@ -110,9 +128,9 @@ class Kartoittaja(k: Kartta) {
   def getKartta = new java.awt.Component() {
     
     createKartta
-    setMinimumSize(new Dimension(2000, 2000))
-    setPreferredSize(new Dimension(2000, 2000))
-    setMaximumSize(new Dimension(2000, 2000))
+    setMinimumSize(new Dimension(kartanKoko, kartanKoko))
+    setPreferredSize(new Dimension(kartanKoko, kartanKoko))
+    setMaximumSize(new Dimension(kartanKoko, kartanKoko))
     
     val kartta = ImageIO.read(new File("pelikartta.png"))
     override def paint(g: java.awt.Graphics) = {
@@ -125,11 +143,10 @@ class Kartoittaja(k: Kartta) {
     override def paintComponent(g: Graphics2D) {
       g.drawImage(miniIcon, 0, 0, null)
     }
-    minimumSize = new Dimension(100, 100)
-    preferredSize = new Dimension(100, 100)
-    maximumSize = new Dimension(100, 100)
+    minimumSize = new Dimension(miniKoko, miniKoko)
+    preferredSize = new Dimension(miniKoko, miniKoko)
+    maximumSize = new Dimension(miniKoko, miniKoko)
   }
-  
 }
 
 

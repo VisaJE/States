@@ -9,6 +9,8 @@ import javax.swing.JLabel
 import javax.swing.Timer
 import javax.swing.JTextField
 import javax.swing.JScrollPane
+import javax.swing.JLayeredPane
+import javax.swing.JPanel
 import scala.collection.mutable.Buffer
 import scala.concurrent.Future
 import javax.swing.SwingUtilities
@@ -397,6 +399,18 @@ object Käyttöliittymä extends SimpleSwingApplication {
   }
   
   
+  // Kuuntelija kartalle
+  class Kuuntelija extends JPanel with java.awt.event.MouseListener {
+    def mouseClicked(x$1: java.awt.event.MouseEvent): Unit = println("!!")
+    def mouseEntered(x$1: java.awt.event.MouseEvent): Unit = println("!!")
+    def mouseExited(x$1: java.awt.event.MouseEvent): Unit = println("!!")
+    def mousePressed(x$1: java.awt.event.MouseEvent): Unit = println("!!")
+    def mouseReleased(x$1: java.awt.event.MouseEvent): Unit = println("!!")
+    addMouseListener(this)
+    setMinimumSize(new Dimension(2000, 2000))
+    setPreferredSize(new Dimension(2000, 2000))
+    setMaximumSize(new Dimension(2000, 2000))
+  }
   
     // Kartta
   private def alustaKartta() = {
@@ -434,7 +448,13 @@ object Käyttöliittymä extends SimpleSwingApplication {
         yliLaitosPaneeli.repaint
       }
     }
+    
     // Kuvallinen kartta
+    val lejeeri = new JLayeredPane()
+    val kuuntelija = new Kuuntelija
+    
+    lejeeri.add(kuuntelija)
+    lejeeri.add(kkartta)
     val scrollable = new JScrollPane(kkartta) {
       setMinimumSize(new Dimension(550, 500))
     }
