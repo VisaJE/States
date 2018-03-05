@@ -411,9 +411,15 @@ object Käyttöliittymä extends SimpleSwingApplication {
     val karttaPaneeli = new BoxPanel(Orientation.Horizontal)
     karttaIkkuna.contents = karttaPaneeli
     val tietoKohta = new BoxPanel(Orientation.Vertical)
-    tietoKohta.preferredSize = new Dimension(500, 100)
+    tietoKohta.preferredSize = new Dimension(120, 400)
     tietoKohta.contents += miniKartta
-    tietoKohta.contents += nullLaitosPaneeli
+    
+    val yliLaitosPaneeli = new BoxPanel(Orientation.Vertical){
+      maximumSize = new Dimension(120, 1000)
+    }
+    
+    yliLaitosPaneeli.contents += nullLaitosPaneeli
+    tietoKohta.contents += yliLaitosPaneeli
     tietoKohta.border_=(Swing.LineBorder(new Color(100, 100, 100), 2))
     
     
@@ -422,11 +428,10 @@ object Käyttöliittymä extends SimpleSwingApplication {
     karttaPaneeli.contents += kartta
     for (i <- tk.kartta.laitokset) {
       kartta.contents += Button("Laitos") {
-        tietoKohta.contents.clear()
-        tietoKohta.contents += miniKartta
-        tietoKohta.contents += laitosPaneeli(i)
-        tietoKohta.revalidate
-        tietoKohta.repaint
+        yliLaitosPaneeli.contents.clear()
+        yliLaitosPaneeli.contents += laitosPaneeli(i)
+        yliLaitosPaneeli.revalidate
+        yliLaitosPaneeli.repaint
       }
     }
     // Kuvallinen kartta
@@ -480,7 +485,7 @@ object Käyttöliittymä extends SimpleSwingApplication {
           paneeli.contents += new TextField("Resurssit eivät riitä." , 20)
           paneeli.revalidate
           paneeli.repaint
-        }
+        } 
         else {
           paneeli.contents.clear()
           paneeli.contents += new TextField("Ostettu!", 20)
@@ -489,6 +494,7 @@ object Käyttöliittymä extends SimpleSwingApplication {
         }
       }
     }
+    paneeli.maximumSize = new Dimension(100, 1000)
     paneeli
   }
   
