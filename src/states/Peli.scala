@@ -15,8 +15,9 @@ class Peli(ihmiset: Buffer[String], tekoälyt: Int) {
   
   
   // Määritetään laitokset ja niiden parametrit.
+  // Kartalla on 64 blokkia laitoksille.
   private val peltoteho = Asetus.asInt("peltoteho")
-  private val peltoja = satunnainen(4) + 2*(ihmiset.size+tekoälyt)
+  private val peltoja = satunnainen(3) + 2*(ihmiset.size+tekoälyt)
   for (i <- 1 to peltoja) {
     val joku = satunnainen(100)
     kartta.lisää(new Pelto(Vector(Raha(2*joku+40)), 20 + joku/3, peltoteho))
@@ -32,7 +33,7 @@ class Peli(ihmiset: Buffer[String], tekoälyt: Int) {
   
   
   private val tehdasteho = Asetus.asInt("tehdasteho")
-  private val tehtaita = satunnainen(1) + 1*(ihmiset.size+tekoälyt)
+  private val tehtaita = satunnainen(2) + 1*(ihmiset.size+tekoälyt)
   for (i <- 1 to tehtaita) {
     val joku = satunnainen(50)
     kartta.lisää(new Tehdas(Vector(Raha(joku + 200), new Rauta(20)), 10 + joku/2, tehdasteho, joku))
@@ -44,6 +45,7 @@ class Peli(ihmiset: Buffer[String], tekoälyt: Int) {
     val joku = satunnainen(20)
     kartta.lisää(new Pelto(Vector(Raha(joku*10+300), new Työkalut(joku + 10)), 200 + joku*2, peltoteho))
   }
+  val laitoksia = peltoja + kaivoksia + tehtaita + suurpeltoja
   
   
   // Määritetään pelin alkutila

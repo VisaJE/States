@@ -2,6 +2,7 @@
 
 import scala.swing._
 import scala.swing.event._
+import scala.swing.BorderPanel.Position._
 import javax.swing.ImageIcon
 import javax.swing.SpinnerNumberModel
 import javax.swing.JSpinner
@@ -11,6 +12,7 @@ import javax.swing.JTextField
 import javax.swing.JScrollPane
 import javax.swing.JLayeredPane
 import javax.swing.JPanel
+import javax.swing.JViewport
 import scala.collection.mutable.Buffer
 import scala.concurrent.Future
 import javax.swing.SwingUtilities
@@ -400,7 +402,7 @@ object Käyttöliittymä extends SimpleSwingApplication {
   
   // Laitosten tiedot tulevat tähän.
   val yliLaitosPaneeli = new BoxPanel(Orientation.Vertical){
-      maximumSize = new Dimension(120, 1000)
+      maximumSize = new Dimension(160, 1000)
     }
   
     // Kartta
@@ -416,11 +418,11 @@ object Käyttöliittymä extends SimpleSwingApplication {
     val karttaPaneeli = new BoxPanel(Orientation.Horizontal)
     karttaIkkuna.contents = karttaPaneeli
     val tietoKohta = new BoxPanel(Orientation.Vertical)
-    tietoKohta.preferredSize = new Dimension(120, 400)
+    tietoKohta.preferredSize = new Dimension(160, 400)
     tietoKohta.contents += miniKartta
     
     
-    
+    yliLaitosPaneeli.contents.clear()
     yliLaitosPaneeli.contents += nullLaitosPaneeli
     tietoKohta.contents += yliLaitosPaneeli
     tietoKohta.border_=(Swing.LineBorder(new Color(100, 100, 100), 2))
@@ -437,11 +439,25 @@ object Käyttöliittymä extends SimpleSwingApplication {
     karttaPaneeli.repaint
     karttaIkkuna.centerOnScreen()
   }
+  
+  
+  def raahaa(dx: Int, dy: Int) = {
+    val portti: JViewport =  SwingUtilities
+    .getAncestorOfClass(new (JViewport).getClass, kkartta).asInstanceOf[JViewport]
+    if (portti != null) {
+      val kuva = portti.getViewRect()
+      kuva.x += dx
+      kuva.y += dy
+      kkartta.scrollRectToVisible(kuva)
+    }
+  }
+  
+  
   def avaaLaitos(l: Laitos) = {
     yliLaitosPaneeli.contents.clear()
-        yliLaitosPaneeli.contents += laitosPaneeli(l)
-        yliLaitosPaneeli.revalidate
-        yliLaitosPaneeli.repaint
+    yliLaitosPaneeli.contents += laitosPaneeli(l)
+    yliLaitosPaneeli.revalidate
+    yliLaitosPaneeli.repaint
   }
   
   
@@ -478,22 +494,25 @@ object Käyttöliittymä extends SimpleSwingApplication {
         focusable = false
         border = Swing.LineBorder(new Color(0,0,0), 1)
       }
-      paneeli.contents += Button("Osta") {
-        if (!tk.osta(laitos)) {
-          paneeli.contents.clear()
-          paneeli.contents += new TextField("Resurssit eivät riitä." , 20)
-          paneeli.revalidate
-          paneeli.repaint
-        } 
-        else {
-          paneeli.contents.clear()
-          paneeli.contents += new TextField("Ostettu!", 20)
-          paneeli.revalidate
-          paneeli.repaint
-        }
+      paneeli.contents += new BorderPanel {
+        layout(Button("Osta") {
+          if (!tk.osta(laitos)) {
+            paneeli.contents.clear()
+            paneeli.contents += new TextField("Resurssit eivät riitä." , 20)
+            paneeli.revalidate
+            paneeli.repaint
+          } 
+          else {
+            paneeli.contents.clear()
+            paneeli.contents += new TextField("Ostettu!", 20)
+            paneeli.revalidate
+            paneeli.repaint
+          }
+        }) = Center
+        maximumSize = new Dimension(150, 50)
       }
     }
-    paneeli.maximumSize = new Dimension(100, 1000)
+    paneeli.maximumSize = new Dimension(150, 1000)
     paneeli
   }
   
@@ -621,7 +640,7 @@ object Käyttöliittymä extends SimpleSwingApplication {
   class PeliSäie extends Runnable {
     def run = {
       peli = new Peli(nimiLista, tekoälyjä)
-      val kartoittaja = (new Kartoittaja(peli.kartta))
+      val kartoittaja = (new Kartoittaja(peli.kartta, peli.laitoksia/60+1))
       kkartta = kartoittaja.getKarttaPane
       miniKartta = kkartta.getMini 
       peli.aloita()

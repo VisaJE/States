@@ -9,11 +9,12 @@ import javax.swing._
 import java.awt.Image
 import java.awt.image.BufferedImage
 import scala.util.Random
+import java.awt.GraphicsConfiguration._
 
 
-class Kartoittaja(k: Kartta) {
-  val blokkeja = 10
-  val miniKoko = 100
+class Kartoittaja(k: Kartta, kokoKerroin: Int = 1) {
+  val blokkeja = 10*kokoKerroin
+  val miniKoko = 150
   val kartanKoko = 2000
   
   
@@ -35,7 +36,9 @@ class Kartoittaja(k: Kartta) {
       "kartat/mätäs.png",
       "kartat/puska.png",
       "kartat/kukka.png",
-      "kartat/sieni.png")
+      "kartat/sieni.png",
+      "kartat/kanto.png",
+      "kartat/tummaruoho.png")
       
   
   def rand = new Random()
@@ -54,10 +57,20 @@ class Kartoittaja(k: Kartta) {
   
   
   private def jokuKoriste = {
-    ImageIO.read(new File(koristeet(rand.nextInt(koristeet.size))))
+    val kuva = ImageIO.read(new File(koristeet(rand.nextInt(koristeet.size))))
+    kuva.getScaledInstance(kuva.getWidth/kokoKerroin, kuva.getHeight/kokoKerroin, Image.SCALE_DEFAULT)
   }
+  // Sijoittaa satunnaiseen kohtaan neliössä.
   private def jokuRoska = {
-    ImageIO.read(new File(roskat(rand.nextInt(roskat.size))))
+    val tyhjä = new BufferedImage(kartanKoko/blokkeja, kartanKoko/blokkeja, BufferedImage.TYPE_INT_ARGB)
+    val kuva = ImageIO.read(new File(roskat(rand.nextInt(roskat.size))))
+    if (kokoKerroin != 1) {
+    kuva.getScaledInstance(kuva.getWidth/kokoKerroin, kuva.getHeight/kokoKerroin, Image.SCALE_DEFAULT)
+    }
+    val dx = rand.nextInt(tyhjä.getWidth - kuva.getWidth)
+    val dy = rand.nextInt(tyhjä.getHeight - kuva.getHeight)
+    tyhjä.createGraphics().drawImage(kuva, dx, dy, null)
+    tyhjä
   }
   
   
@@ -143,38 +156,56 @@ class Kartoittaja(k: Kartta) {
 }
 
 class KarttaPane(kartoittaja: Kartoittaja, kartanKoko: Int, miniKoko: Int)
-  extends java.awt.Component() with java.awt.event.MouseListener {
+  extends JLabel() /*with java.awt.event.MouseListener */{
     
   kartoittaja.createKartta
   setMinimumSize(new Dimension(kartanKoko, kartanKoko))
   setPreferredSize(new Dimension(kartanKoko, kartanKoko))
   setMaximumSize(new Dimension(kartanKoko, kartanKoko))
-    
+  setAutoscrolls(true)
+  
   val kartta = ImageIO.read(new File("pelikartta.png"))
     
+  
   override def paint(g: java.awt.Graphics) = {
     g.drawImage(kartta, 0, 0, null)   }
     
-  private def miniIcon = ImageIO.read(new File("pelikartta.png"))
-    .getScaledInstance(100, 100, Image.SCALE_DEFAULT)
   
+  private def miniIcon = ImageIO.read(new File("pelikartta.png"))
+    .getScaledInstance(miniKoko, miniKoko, Image.SCALE_DEFAULT)
+  
+    
   def getMini = new scala.swing.BoxPanel(Orientation.Horizontal) {
     override def paintComponent(g: Graphics2D) {
       g.drawImage(miniIcon, 0, 0, null)
+    }
+    minimumSize = new Dimension(miniKoko, miniKoko)
+    preferredSize = new Dimension(miniKoko, miniKoko)
+    maximumSize = new Dimension(miniKoko, miniKoko)
   }
-  minimumSize = new Dimension(miniKoko, miniKoko)
-  preferredSize = new Dimension(miniKoko, miniKoko)
-  maximumSize = new Dimension(miniKoko, miniKoko)
+  
+  
+  val listener = new MouseAdapter() {
+    var origin: Point = null
+    override def mouseClicked(x$1: java.awt.event.MouseEvent): Unit = {
+      kartoittaja.klikkaa(x$1.getX, x$1.getY)
+    }
+    override def mouseDragged(e: java.awt.event.MouseEvent): Unit = {
+       if (origin != null) {
+         val dx = origin.x - e.getX()
+         val dy = origin.y - e.getY()
+         Käyttöliittymä.raahaa(dx, dy)
+       }
+    }  
+    override def mousePressed(x$1: java.awt.event.MouseEvent): Unit = {
+      origin = x$1.getPoint
+    }
+    override def mouseReleased(x$1: java.awt.event.MouseEvent): Unit = {}
   }
-    
-  def mouseClicked(x$1: java.awt.event.MouseEvent): Unit = kartoittaja.klikkaa(x$1.getX, x$1.getY)
-  def mouseEntered(x$1: java.awt.event.MouseEvent): Unit = {}  
-  def mouseExited(x$1: java.awt.event.MouseEvent): Unit = {}
-  def mousePressed(x$1: java.awt.event.MouseEvent): Unit = {}
-  def mouseReleased(x$1: java.awt.event.MouseEvent): Unit = {}
     
 
-  addMouseListener(this)
+  addMouseListener(listener)
+  addMouseMotionListener(listener)
   }
 
 
@@ -192,7 +223,7 @@ class Blokki(val yCoord: Int,val xCoord: Int) {
     tyhjä = false
   }
   
-  def lisääKoriste(i: BufferedImage) = {
+  def lisääKoriste(i: Image) = {
     ikoni = Some(i)
     tyhjä = false
   }
