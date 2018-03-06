@@ -4,10 +4,10 @@ Vuoronaika millisekunneissa:
 vuoronaika = 100000
 
 Tuotteiden tyytyväisyyskertoimet:
-tkraha = 0.2
-tkrauta = 0.1
-tkvilja = 1.0
-tktyökalut = 0.5
+tkraha = 0.1
+tkrauta = 0.06
+tkvilja = 0.5
+tktyökalut = 0.3
 
 Tuotteiden tarpeellisuus:
 traha = 0
@@ -17,14 +17,14 @@ tvilja = 4
 
 Tuotteiden arvo:
 avilja = 2
-arauta = 5
+arauta = 3
 atyökalut = 20
 
 Ahkeruuden suhde tyytyväisyyteen:
-ahkeruuseksponentti = 0.6
+ahkeruuseksponentti = 1.6
 
 Tyytyväisyyden eron aiheuttamat loikat:
-loikkausindeksi = 0.6
+loikkausindeksi = 0.05
 loikkauseksponentti = 2.0
 
 alkupopulaatio = 50
@@ -35,7 +35,7 @@ kaivosteho = 2
 tehdasteho = 1
 
 Nollatyön tyytyväisyyskerroin:
-tknollatyö = -5
+tknollatyö = -2
 
 Tarpeen täyttymättömyyden kuolettavuus:
 tappoindeksi = 0.5
@@ -44,4 +44,4 @@ Tyytyväisyyden ja syntyvyyden suhde:
 syntyvyysindeksi = 0.6
 
 Yleinen resurssien ja tyytyväisyyden suhde:
-resurssityytyväisyys = 2.0
+resurssityytyväisyys = 2.5

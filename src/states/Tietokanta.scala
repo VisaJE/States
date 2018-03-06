@@ -9,7 +9,7 @@ class Tietokanta(val kassa: Kassa, val kartta: Kartta, var populaatio: Int = 0) 
   private val tappoIndeksi = Asetus.as("tappoindeksi")
   private val resurssiTyytyväisyysKerroin = Asetus.as("resurssityytyväisyys")
   private val syntyvyysKerroin = Asetus.as("syntyvyysindeksi")
-  var tyytyväisyys: Int = 0
+  var tyytyväisyys: Long = 0L
   
   
   def vuoro(työOsuus: Vector[Double], ahkeruus: Vector[Double]) = {

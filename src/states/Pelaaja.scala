@@ -19,7 +19,9 @@ class Tekoäly(tk: Tietokanta) extends Pelaaja(tk) {
     myyKaikki()
     while (ostaPeltoja) {
     }
-    ostaKaikkea()
+    if(tk.kassa.laitokset.size > 0) {
+      ostaKaikkea()
+    }
     teeToiminta
     
   }
@@ -54,7 +56,8 @@ class Tekoäly(tk: Tietokanta) extends Pelaaja(tk) {
   }
   
   private def ostaKaikkea() = {
-    tk.kartta.laitokset.foreach(tk.osta(_))
+    tk.kartta.laitokset.sortBy(a=> a.hinta.foldLeft(0)(_ + _.määrä))
+    .foreach(tk.osta(_))
   }
 }
 

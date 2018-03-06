@@ -201,12 +201,21 @@ class KarttaPane(kartoittaja: Kartoittaja, kartanKoko: Int, miniKoko: Int)
     }  
     override def mousePressed(x$1: java.awt.event.MouseEvent): Unit = {
       origin = x$1.getPoint
+      try {
       coordOrigin = x$1.getLocationOnScreen
+      }
+      catch {
+      case e: java.awt.IllegalComponentStateException => coordOrigin = origin
+      }
     }
     override def mouseReleased(x$1: java.awt.event.MouseEvent): Unit = {
-      if ( abs(coordOrigin.x - x$1.getXOnScreen) < 10 && abs(coordOrigin.y - x$1.getYOnScreen) < 10) {
-        kartoittaja.klikkaa(x$1.getX, x$1.getY)
-      }     
+      try {
+        if ( abs(coordOrigin.x - x$1.getXOnScreen) < 10 && abs(coordOrigin.y - x$1.getYOnScreen) < 10) {
+          kartoittaja.klikkaa(x$1.getX, x$1.getY)
+        }     
+      } catch{
+        case e : java.awt.IllegalComponentStateException => {}
+      }
     }
   }
     

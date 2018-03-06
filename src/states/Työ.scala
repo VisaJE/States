@@ -23,7 +23,7 @@ abstract class Työ(val kulutus: Vector[Tuote] = Vector(), val tuotto: Vector[Tu
         else break
       }
     }
-    -(määrä*pow(ahkeruus,ahkeruusEksponentti)).toInt
+  -(määrä*pow(ahkeruus,ahkeruusEksponentti)).toInt
   }
   
   def toimi(ahkeruus: Double, kassa: Kassa): Int = toimi(ahkeruus, kassa, koko)

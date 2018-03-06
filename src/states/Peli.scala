@@ -15,12 +15,18 @@ class Peli(ihmiset: Buffer[String], tekoälyt: Int) {
   
   
   // Määritetään laitokset ja niiden parametrit.
-  // Kartalla on 64 blokkia laitoksille.
+  // Peltoja on oltava sopivasti, jotta aloittajan etu ei olisi suuri.
   private val peltoteho = Asetus.asInt("peltoteho")
-  private val peltoja = satunnainen(3) + 2*(ihmiset.size+tekoälyt)
-  for (i <- 1 to peltoja) {
-    val joku = satunnainen(100)
-    kartta.lisää(new Pelto(Vector(Raha(2*joku+50)), 20 + joku/3, peltoteho))
+  private val peltoja = satunnainen(3) + 3*(ihmiset.size+tekoälyt)
+  // Halpoja:
+  for (i <- 1 to peltoja-peltoja/3) {
+    val joku = satunnainen(50)
+    kartta.lisää(new Pelto(Vector(Raha(joku+80)), 20 + joku/2, peltoteho))
+  }
+  // Kalliimpia:
+  for (i <- 1 to peltoja/3) {
+    val joku = satunnainen(60)
+    kartta.lisää(new Pelto(Vector(Raha(2*(90+joku))), 40 + joku, peltoteho))
   }
   
   
@@ -28,7 +34,7 @@ class Peli(ihmiset: Buffer[String], tekoälyt: Int) {
   private val kaivoksia = satunnainen(5) + 1*(ihmiset.size+tekoälyt)
   for (i <- 1 to kaivoksia) {
     val joku = satunnainen(200)
-    kartta.lisää(new Kaivos(Vector(Raha(joku+70)), 10 + joku/2, kaivosteho))
+    kartta.lisää(new Kaivos(Vector(Raha(joku+70)), 20 + joku/2, kaivosteho))
   }
   
   
@@ -50,7 +56,8 @@ class Peli(ihmiset: Buffer[String], tekoälyt: Int) {
   
   // Määritetään pelin alkutila
   private val alkupopulaatio = Asetus.asInt("alkupopulaatio")
-  def aloitusesineet: Buffer[Tuote] = Buffer(Raha(150), new Vilja(100))
+  
+  def aloitusesineet: Buffer[Tuote] = Buffer(Raha(130), new Vilja(40))
   
   
  
@@ -110,10 +117,10 @@ class Peli(ihmiset: Buffer[String], tekoälyt: Int) {
   
   
   private def loikkaukset() = {
-    val keskTyyt = pelaajat.foldLeft(0)((a: Int, b: Pelaaja) =>
+    val keskTyyt = pelaajat.foldLeft(0L)((a: Long, b: Pelaaja) =>
       a + (b.tk.tyytyväisyys / pelaajat.size))
     pelaajat.foreach((a: Pelaaja) => 
-      a.tk.tyytyväisyys += (signum(a.tk.tyytyväisyys - keskTyyt)*
+      a.tk.populaatio += (signum(a.tk.tyytyväisyys - keskTyyt)*
           loikkausIndeksi *
           pow(abs(a.tk.tyytyväisyys - keskTyyt), loikkausEksponentti)).toInt
       )
