@@ -1,6 +1,6 @@
 package states
 
-
+import scala.math._
 
 abstract class Pelaaja(val tk: Tietokanta) {
   
@@ -17,9 +17,9 @@ abstract class Pelaaja(val tk: Tietokanta) {
 class Tekoäly(tk: Tietokanta) extends Pelaaja(tk) {
   def vuoro = {
     myyKaikki()
-    if (!ostaPeltoja()) {
-      ostaKaikkea()
+    while (ostaPeltoja) {
     }
+    ostaKaikkea()
     teeToiminta
     
   }
@@ -31,15 +31,16 @@ class Tekoäly(tk: Tietokanta) extends Pelaaja(tk) {
   
   private def teeToiminta = {
     val lista = tk.kassa.työLista
-    val toimeksianto = (for (i <- 1 to lista.size) yield 1.0).toVector
-    new Toiminta(toimeksianto, toimeksianto, tk)
+    val toimeksianto = lista.map(_ => 1.0).scan(1.0)((a,b) => a / 1.5).tail
+    val ahkeruus = lista.map(_ => 1.0)
+    new Toiminta(toimeksianto, ahkeruus, tk)
   }
   
   
   private def ostaPeltoja(): Boolean = {
     val pellot = tk.kartta.laitokset.filter(x => x.työt.
         exists(y => new Viljely(0,0).tyyppiVertaus(y)))
-    pellot.exists(tk.osta(_))
+    pellot.sortBy(a=> a.hinta.foldLeft(0)(_ + _.määrä)).exists(tk.osta(_))
   }
   
   

@@ -1,5 +1,6 @@
 package states
 
+import scala.math._
 import scala.swing._
 import java.awt.event._
 import javax.swing.ImageIcon
@@ -187,8 +188,9 @@ class KarttaPane(kartoittaja: Kartoittaja, kartanKoko: Int, miniKoko: Int)
   
   val listener = new MouseAdapter() {
     var origin: Point = null
+    var coordOrigin: Point = null
     override def mouseClicked(x$1: java.awt.event.MouseEvent): Unit = {
-      kartoittaja.klikkaa(x$1.getX, x$1.getY)
+      
     }
     override def mouseDragged(e: java.awt.event.MouseEvent): Unit = {
        if (origin != null) {
@@ -199,8 +201,13 @@ class KarttaPane(kartoittaja: Kartoittaja, kartanKoko: Int, miniKoko: Int)
     }  
     override def mousePressed(x$1: java.awt.event.MouseEvent): Unit = {
       origin = x$1.getPoint
+      coordOrigin = x$1.getLocationOnScreen
     }
-    override def mouseReleased(x$1: java.awt.event.MouseEvent): Unit = {}
+    override def mouseReleased(x$1: java.awt.event.MouseEvent): Unit = {
+      if ( abs(coordOrigin.x - x$1.getXOnScreen) < 10 && abs(coordOrigin.y - x$1.getYOnScreen) < 10) {
+        kartoittaja.klikkaa(x$1.getX, x$1.getY)
+      }     
+    }
   }
     
 

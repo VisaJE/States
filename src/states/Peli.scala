@@ -20,15 +20,15 @@ class Peli(ihmiset: Buffer[String], tekoälyt: Int) {
   private val peltoja = satunnainen(3) + 2*(ihmiset.size+tekoälyt)
   for (i <- 1 to peltoja) {
     val joku = satunnainen(100)
-    kartta.lisää(new Pelto(Vector(Raha(2*joku+40)), 20 + joku/3, peltoteho))
+    kartta.lisää(new Pelto(Vector(Raha(2*joku+50)), 20 + joku/3, peltoteho))
   }
   
   
   private val kaivosteho = Asetus.asInt("kaivosteho")
-  private val kaivoksia = satunnainen(3) + 1*(ihmiset.size+tekoälyt)
+  private val kaivoksia = satunnainen(5) + 1*(ihmiset.size+tekoälyt)
   for (i <- 1 to kaivoksia) {
     val joku = satunnainen(200)
-    kartta.lisää(new Kaivos(Vector(Raha(joku+50)), 10 + joku, kaivosteho))
+    kartta.lisää(new Kaivos(Vector(Raha(joku+70)), 10 + joku/2, kaivosteho))
   }
   
   

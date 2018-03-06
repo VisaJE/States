@@ -10,7 +10,7 @@ tkvilja = 1.0
 tktyökalut = 0.5
 
 Tuotteiden tarpeellisuus:
-traha = 1
+traha = 0
 trauta = 0
 ttyökalut = 0
 tvilja = 4
@@ -21,27 +21,27 @@ arauta = 5
 atyökalut = 20
 
 Ahkeruuden suhde tyytyväisyyteen:
-ahkeruuseksponentti = 0.5
+ahkeruuseksponentti = 0.6
 
 Tyytyväisyyden eron aiheuttamat loikat:
-loikkausindeksi = 1.0
+loikkausindeksi = 0.6
 loikkauseksponentti = 2.0
 
 alkupopulaatio = 50
 
 Laitosten toiminnan teho:
 peltoteho = 6
-kaivosteho = 3
+kaivosteho = 2
 tehdasteho = 1
 
 Nollatyön tyytyväisyyskerroin:
-tknollatyö = -2
+tknollatyö = -5
 
 Tarpeen täyttymättömyyden kuolettavuus:
 tappoindeksi = 0.5
 
 Tyytyväisyyden ja syntyvyyden suhde:
-syntyvyysindeksi = 0.4
+syntyvyysindeksi = 0.6
 
 Yleinen resurssien ja tyytyväisyyden suhde:
-resurssityytyväisyys = 1.0
+resurssityytyväisyys = 2.0
