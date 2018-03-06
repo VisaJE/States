@@ -126,13 +126,20 @@ class Kartoittaja(k: Kartta) {
   def getKarttaPane = new KarttaPane(this, kartanKoko, miniKoko)
   
   def haeBlokki(x: Int, y: Int): Option[Blokki] = {
-    val i = x / blokkeja
-    val j = y / blokkeja
+    val kerroin = kartanKoko/blokkeja
+    val i = x / kerroin
+    val j = y / kerroin
     if (j < blokit.size && i < blokit(0).size) {
       Some(blokit(j)(i))
     }
     else None
   }
+  
+  
+  def klikkaa(x: Int, y: Int) = {
+    haeBlokki(x, y).foreach(_.laitos.foreach(a => Käyttöliittymä.avaaLaitos(a)))
+  }
+  
 }
 
 class KarttaPane(kartoittaja: Kartoittaja, kartanKoko: Int, miniKoko: Int)
@@ -160,7 +167,7 @@ class KarttaPane(kartoittaja: Kartoittaja, kartanKoko: Int, miniKoko: Int)
   maximumSize = new Dimension(miniKoko, miniKoko)
   }
     
-  def mouseClicked(x$1: java.awt.event.MouseEvent): Unit = println(x$1.getX + " ja " + x$1.getY)
+  def mouseClicked(x$1: java.awt.event.MouseEvent): Unit = kartoittaja.klikkaa(x$1.getX, x$1.getY)
   def mouseEntered(x$1: java.awt.event.MouseEvent): Unit = {}  
   def mouseExited(x$1: java.awt.event.MouseEvent): Unit = {}
   def mousePressed(x$1: java.awt.event.MouseEvent): Unit = {}

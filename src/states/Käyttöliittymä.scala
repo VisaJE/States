@@ -398,7 +398,10 @@ object Käyttöliittymä extends SimpleSwingApplication {
     v.map(x => if (!x._1) scala.math.round((kerroin*x._2)).toInt else x._2)
   }
   
-  
+  // Laitosten tiedot tulevat tähän.
+  val yliLaitosPaneeli = new BoxPanel(Orientation.Vertical){
+      maximumSize = new Dimension(120, 1000)
+    }
   
     // Kartta
   private def alustaKartta() = {
@@ -416,37 +419,14 @@ object Käyttöliittymä extends SimpleSwingApplication {
     tietoKohta.preferredSize = new Dimension(120, 400)
     tietoKohta.contents += miniKartta
     
-    val yliLaitosPaneeli = new BoxPanel(Orientation.Vertical){
-      maximumSize = new Dimension(120, 1000)
-    }
+    
     
     yliLaitosPaneeli.contents += nullLaitosPaneeli
     tietoKohta.contents += yliLaitosPaneeli
     tietoKohta.border_=(Swing.LineBorder(new Color(100, 100, 100), 2))
     
     
-    // Väliaikainen kartta
-    val kartta = new BoxPanel(Orientation.Vertical)
-    karttaPaneeli.contents += kartta
-    for (i <- tk.kartta.laitokset) {
-      kartta.contents += Button("Laitos") {
-        yliLaitosPaneeli.contents.clear()
-        yliLaitosPaneeli.contents += laitosPaneeli(i)
-        yliLaitosPaneeli.revalidate
-        yliLaitosPaneeli.repaint
-      }
-    }
-    
     // Kuvallinen kartta
-    val lejeeri = new JLayeredPane() {
-      setVisible(true)
-    }
-    val kuuntelija = new Kuuntelija {
-      setVisible(false)
-    }
-    
-    lejeeri.add(kkartta)
-    lejeeri.add(kuuntelija)
     
     val scrollable = new JScrollPane(kkartta) {
       setMinimumSize(new Dimension(550, 500))
@@ -456,6 +436,12 @@ object Käyttöliittymä extends SimpleSwingApplication {
     karttaPaneeli.revalidate
     karttaPaneeli.repaint
     karttaIkkuna.centerOnScreen()
+  }
+  def avaaLaitos(l: Laitos) = {
+    yliLaitosPaneeli.contents.clear()
+        yliLaitosPaneeli.contents += laitosPaneeli(l)
+        yliLaitosPaneeli.revalidate
+        yliLaitosPaneeli.repaint
   }
   
   
