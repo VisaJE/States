@@ -399,18 +399,6 @@ object Käyttöliittymä extends SimpleSwingApplication {
   }
   
   
-  // Kuuntelija kartalle
-  class Kuuntelija extends JPanel with java.awt.event.MouseListener {
-    def mouseClicked(x$1: java.awt.event.MouseEvent): Unit = println("!!")
-    def mouseEntered(x$1: java.awt.event.MouseEvent): Unit = println("!!")
-    def mouseExited(x$1: java.awt.event.MouseEvent): Unit = println("!!")
-    def mousePressed(x$1: java.awt.event.MouseEvent): Unit = println("!!")
-    def mouseReleased(x$1: java.awt.event.MouseEvent): Unit = println("!!")
-    addMouseListener(this)
-    setMinimumSize(new Dimension(2000, 2000))
-    setPreferredSize(new Dimension(2000, 2000))
-    setMaximumSize(new Dimension(2000, 2000))
-  }
   
     // Kartta
   private def alustaKartta() = {
@@ -450,11 +438,16 @@ object Käyttöliittymä extends SimpleSwingApplication {
     }
     
     // Kuvallinen kartta
-    val lejeeri = new JLayeredPane()
-    val kuuntelija = new Kuuntelija
+    val lejeeri = new JLayeredPane() {
+      setVisible(true)
+    }
+    val kuuntelija = new Kuuntelija {
+      setVisible(false)
+    }
     
-    lejeeri.add(kuuntelija)
     lejeeri.add(kkartta)
+    lejeeri.add(kuuntelija)
+    
     val scrollable = new JScrollPane(kkartta) {
       setMinimumSize(new Dimension(550, 500))
     }
@@ -636,15 +629,15 @@ object Käyttöliittymä extends SimpleSwingApplication {
   
   
   private var peli: Peli = null
-  private var kkartta: java.awt.Component = null
+  private var kkartta: KarttaPane = null
   private var miniKartta: swing.Component = null
   
   class PeliSäie extends Runnable {
     def run = {
       peli = new Peli(nimiLista, tekoälyjä)
       val kartoittaja = (new Kartoittaja(peli.kartta))
-      miniKartta = kartoittaja.getMini
-      kkartta = kartoittaja.getKartta
+      kkartta = kartoittaja.getKarttaPane
+      miniKartta = kkartta.getMini 
       peli.aloita()
     }
   }

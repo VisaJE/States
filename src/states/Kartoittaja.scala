@@ -105,7 +105,7 @@ class Kartoittaja(k: Kartta) {
   
   
   // Lataillaan kartta ja lisätään ikonit
-  private def createKartta = {
+  def createKartta = {
     val tulos = ImageIO.read(new File(path))
     val g2d = tulos.createGraphics()
     koristele()
@@ -115,8 +115,7 @@ class Kartoittaja(k: Kartta) {
   
   // private val icon = new ImageIcon(path)
   
-  private def miniIcon = ImageIO.read(new File("pelikartta.png"))
-  .getScaledInstance(100, 100, Image.SCALE_DEFAULT)
+  
   
   
    // Laitetaan laitokset blokkeihin
@@ -124,30 +123,52 @@ class Kartoittaja(k: Kartta) {
     asetaLaitos(l)
   }
   
+  def getKarttaPane = new KarttaPane(this, kartanKoko, miniKoko)
   
-  def getKartta = new java.awt.Component() {
-    
-    createKartta
-    setMinimumSize(new Dimension(kartanKoko, kartanKoko))
-    setPreferredSize(new Dimension(kartanKoko, kartanKoko))
-    setMaximumSize(new Dimension(kartanKoko, kartanKoko))
-    
-    val kartta = ImageIO.read(new File("pelikartta.png"))
-    override def paint(g: java.awt.Graphics) = {
-      g.drawImage(kartta, 0, 0, null)
+  def haeBlokki(x: Int, y: Int): Option[Blokki] = {
+    val i = x / blokkeja
+    val j = y / blokkeja
+    if (j < blokit.size && i < blokit(0).size) {
+      Some(blokit(j)(i))
     }
+    else None
   }
-  
+}
+
+class KarttaPane(kartoittaja: Kartoittaja, kartanKoko: Int, miniKoko: Int)
+  extends java.awt.Component() with java.awt.event.MouseListener {
+    
+  kartoittaja.createKartta
+  setMinimumSize(new Dimension(kartanKoko, kartanKoko))
+  setPreferredSize(new Dimension(kartanKoko, kartanKoko))
+  setMaximumSize(new Dimension(kartanKoko, kartanKoko))
+    
+  val kartta = ImageIO.read(new File("pelikartta.png"))
+    
+  override def paint(g: java.awt.Graphics) = {
+    g.drawImage(kartta, 0, 0, null)   }
+    
+  private def miniIcon = ImageIO.read(new File("pelikartta.png"))
+    .getScaledInstance(100, 100, Image.SCALE_DEFAULT)
   
   def getMini = new scala.swing.BoxPanel(Orientation.Horizontal) {
     override def paintComponent(g: Graphics2D) {
       g.drawImage(miniIcon, 0, 0, null)
-    }
-    minimumSize = new Dimension(miniKoko, miniKoko)
-    preferredSize = new Dimension(miniKoko, miniKoko)
-    maximumSize = new Dimension(miniKoko, miniKoko)
   }
-}
+  minimumSize = new Dimension(miniKoko, miniKoko)
+  preferredSize = new Dimension(miniKoko, miniKoko)
+  maximumSize = new Dimension(miniKoko, miniKoko)
+  }
+    
+  def mouseClicked(x$1: java.awt.event.MouseEvent): Unit = println(x$1.getX + " ja " + x$1.getY)
+  def mouseEntered(x$1: java.awt.event.MouseEvent): Unit = {}  
+  def mouseExited(x$1: java.awt.event.MouseEvent): Unit = {}
+  def mousePressed(x$1: java.awt.event.MouseEvent): Unit = {}
+  def mouseReleased(x$1: java.awt.event.MouseEvent): Unit = {}
+    
+
+  addMouseListener(this)
+  }
 
 
 class Blokki(val yCoord: Int,val xCoord: Int) {
