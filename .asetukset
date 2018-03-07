@@ -1,23 +1,23 @@
 Asetukset
 
 Vuoronaika millisekunneissa:
-vuoronaika = 100000
+vuoronaika = 80000
 
 Tuotteiden tyytyväisyyskertoimet:
 tkraha = 0.1
 tkrauta = 0.06
-tkvilja = 0.5
+tkvilja = 0.3
 tktyökalut = 0.3
 
 Tuotteiden tarpeellisuus:
 traha = 0
 trauta = 0
 ttyökalut = 0
-tvilja = 4
+tvilja = 3
 
 Tuotteiden arvo:
-avilja = 2
-arauta = 3
+avilja = 1
+arauta = 2
 atyökalut = 20
 
 Ahkeruuden suhde tyytyväisyyteen:
@@ -27,21 +27,22 @@ Tyytyväisyyden eron aiheuttamat loikat:
 loikkausindeksi = 0.05
 loikkauseksponentti = 2.0
 
-alkupopulaatio = 50
+alkupopulaatio = 40
+alkuraha = 220
 
 Laitosten toiminnan teho:
-peltoteho = 6
-kaivosteho = 2
-tehdasteho = 1
+peltoteho = 7
+kaivosteho = 4
+tehdasteho = 2
 
 Nollatyön tyytyväisyyskerroin:
-tknollatyö = -2
+tknollatyö = -5
 
 Tarpeen täyttymättömyyden kuolettavuus:
-tappoindeksi = 0.5
+tappoindeksi = 0.8
 
 Tyytyväisyyden ja syntyvyyden suhde:
-syntyvyysindeksi = 0.6
+syntyvyysindeksi = 1.1
 
 Yleinen resurssien ja tyytyväisyyden suhde:
-resurssityytyväisyys = 2.5
+resurssityytyväisyys = 4.0

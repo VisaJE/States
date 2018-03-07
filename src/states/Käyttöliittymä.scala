@@ -238,7 +238,7 @@ object Käyttöliittymä extends SimpleSwingApplication {
     peliPaneeli.contents += teeTietoPaneeli
     peliPaneeli.contents += napit
     peliIkkuna.centerOnScreen()
-    
+    peliIkkuna.visible = true
   }
   
   
@@ -373,13 +373,14 @@ object Käyttöliittymä extends SimpleSwingApplication {
   private val sliderit: Buffer[Slider] = Buffer()
   private def lisääSlider():Slider = {
     val slider = new Slider {
-    min = 0
-    max = 100
-    majorTickSpacing = 4
+    min = 1
+    max = 1000
+    majorTickSpacing = 10
     orientation = Orientation.Vertical
+    var väliarvo = 0.0
     }
     sliderit += slider
-    sliderit.foreach(_.value = 100/sliderit.size)
+    sliderit.foreach(_.value = 1000/sliderit.size)
     slider
   }
   private def poistaSliderit() = sliderit.clear()
@@ -394,7 +395,7 @@ object Käyttöliittymä extends SimpleSwingApplication {
   }
   // Skaalaa halutut arvot siten, että ne summautuvat sataseksi. Vain niiden arvoa muutetaan, joiden totuusarvo on false.
   private def suhteuta(v: Array[(Boolean, Int)]) = {
-    val loppuSumma = 100 - v.foldLeft(0)((a,x) => if (x._1) a + x._2 else a)
+    val loppuSumma = 1000 - v.foldLeft(0)((a,x) => if (x._1) a + x._2 else a)
     val nyt = v.foldLeft(0)( (a, x) => if(!x._1) a + x._2 else a)
     val kerroin = {
       if (nyt > 0) loppuSumma*1.0/nyt
@@ -616,6 +617,7 @@ object Käyttöliittymä extends SimpleSwingApplication {
     SwingUtilities.invokeLater(new Runnable() {
       def run() = {    
         peliIkkuna.visible = false
+        peliIkkuna.size = new Dimension(300, 300)
         peliPaneeli.contents.clear()
         val odotus = new Frame() {
           size = new Dimension(300, 300)
@@ -671,6 +673,8 @@ object Käyttöliittymä extends SimpleSwingApplication {
   
   
   private def säikeelläIlmoitus(voittaja: Option[Pelaaja], vuoro: Int) = {
+    muutIkkunat.foreach(_.dispose())
+    peliIkkuna.visible = true
     if (!ilmoitettu) {
       peliPaneeli.contents.clear()
       peliIkkuna.size = new Dimension(200, 150)

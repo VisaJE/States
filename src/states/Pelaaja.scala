@@ -16,7 +16,10 @@ abstract class Pelaaja(val tk: Tietokanta) {
 // Tekee jotain älykästä.
 class Tekoäly(tk: Tietokanta) extends Pelaaja(tk) {
   def vuoro = {
-    myyKaikki()
+    val rahatilanne = haeRaha.getOrElse(Raha(0))
+    if (tk.tyytyväisyys > 0 && rahatilanne.määrä < 500) {
+      myyKaikki()
+    }
     while (ostaPeltoja) {
     }
     if(tk.kassa.laitokset.size > 0) {

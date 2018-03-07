@@ -57,7 +57,7 @@ class Peli(ihmiset: Buffer[String], tekoälyt: Int) {
   // Määritetään pelin alkutila
   private val alkupopulaatio = Asetus.asInt("alkupopulaatio")
   
-  def aloitusesineet: Buffer[Tuote] = Buffer(Raha(130), new Vilja(40))
+  def aloitusesineet: Buffer[Tuote] = Buffer(Raha(Asetus.asInt("alkuraha")))
   
   
  
