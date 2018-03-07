@@ -227,15 +227,18 @@ object Käyttöliittymä extends SimpleSwingApplication {
   
   private def alustaPääPaneeli() = {
     peliPaneeli.contents.clear()
-      peliIkkuna.size = new Dimension(460, 460) 
-      päättöNappi.background = new Color(200, 100,100)  
-      peliPaneeli.contents += taustaPaneeli
+    muutIkkunat.foreach(_.dispose())
+    peliIkkuna.visible = true
+    peliIkkuna.size = new Dimension(460, 460) 
+    päättöNappi.background = new Color(200, 100,100)  
+    peliPaneeli.contents += taustaPaneeli
       
-      peliPaneeli.contents += ajastin
-      peliPaneeli.contents += nimiPaneeli
-      peliPaneeli.contents += teeTietoPaneeli
-      peliPaneeli.contents += napit
-      peliIkkuna.centerOnScreen()
+    peliPaneeli.contents += ajastin
+    peliPaneeli.contents += nimiPaneeli
+    peliPaneeli.contents += teeTietoPaneeli
+    peliPaneeli.contents += napit
+    peliIkkuna.centerOnScreen()
+    
   }
   
   
@@ -612,11 +615,18 @@ object Käyttöliittymä extends SimpleSwingApplication {
   def odotusPaneeli() = {
     SwingUtilities.invokeLater(new Runnable() {
       def run() = {    
+        peliIkkuna.visible = false
         peliPaneeli.contents.clear()
-        peliIkkuna.size = new Dimension(300, 100)
-        peliPaneeli.contents += new TextField("Odotetaan muita pelaajia. . .", 20) {
+        val odotus = new Frame() {
+          size = new Dimension(300, 300)
+        }
+        odotus.contents = new TextField("Odotetaan muita pelaajia. . .", 20) {
         editable = false
         }
+        odotus.visible = true
+        odotus.resizable = false
+        odotus.centerOnScreen()
+        muutIkkunat += odotus
       }
     })
   }
