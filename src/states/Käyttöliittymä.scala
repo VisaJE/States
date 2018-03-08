@@ -457,9 +457,11 @@ object Käyttöliittymä extends SimpleSwingApplication {
   }
   
   
-  def avaaLaitos(l: Laitos) = {
+  def avaaLaitos(l: Option[Laitos]) = {
     yliLaitosPaneeli.contents.clear()
-    yliLaitosPaneeli.contents += laitosPaneeli(l)
+    yliLaitosPaneeli.contents += {
+      if (l != None) laitosPaneeli(l.get) else nullLaitosPaneeli
+    }
     yliLaitosPaneeli.revalidate
     yliLaitosPaneeli.repaint
   }

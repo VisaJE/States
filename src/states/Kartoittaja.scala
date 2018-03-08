@@ -151,7 +151,7 @@ class Kartoittaja(k: Kartta, kokoKerroin: Int = 1) {
   
   
   def klikkaa(x: Int, y: Int) = {
-    haeBlokki(x, y).foreach(_.laitos.foreach(a => Käyttöliittymä.avaaLaitos(a)))
+    haeBlokki(x, y).foreach(a => Käyttöliittymä.avaaLaitos(a.laitos))
   }
   
 }
