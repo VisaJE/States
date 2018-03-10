@@ -1,7 +1,7 @@
 Asetukset
 
 Vuoronaika millisekunneissa:
-vuoronaika = 80000
+vuoronaika = 70000
 
 Tuotteiden tyytyväisyyskertoimet:
 tkraha = 0.1
@@ -45,4 +45,4 @@ Tyytyväisyyden ja syntyvyyden suhde:
 syntyvyysindeksi = 1.3
 
 Yleinen resurssien ja tyytyväisyyden suhde:
-resurssityytyväisyys = 4.0
+resurssityytyväisyys = 4.2
