@@ -28,7 +28,6 @@ class Kartoittaja(k: Kartta, kokoKerroin: Int = 1) {
   
   private val koristeet = Vector(
       "kartat/vaaleepläiskä.png",
-      "kartat/laavaa.png",
       "kartat/puu.png")
       
   private val roskat = Vector(
@@ -64,12 +63,13 @@ class Kartoittaja(k: Kartta, kokoKerroin: Int = 1) {
   // Sijoittaa satunnaiseen kohtaan neliössä.
   private def jokuRoska = {
     val tyhjä = new BufferedImage(kartanKoko/blokkeja, kartanKoko/blokkeja, BufferedImage.TYPE_INT_ARGB)
-    val kuva = ImageIO.read(new File(roskat(rand.nextInt(roskat.size))))
+    var kuva: java.awt.Image = ImageIO.read(new File(roskat(rand.nextInt(roskat.size))))
     if (kokoKerroin != 1) {
-    kuva.getScaledInstance(kuva.getWidth/kokoKerroin, kuva.getHeight/kokoKerroin, Image.SCALE_DEFAULT)
+    kuva = kuva.getScaledInstance(
+            kuva.getWidth(null) /kokoKerroin, kuva.getHeight(null)/kokoKerroin, Image.SCALE_DEFAULT)
     }
-    val dx = rand.nextInt(tyhjä.getWidth - kuva.getWidth)
-    val dy = rand.nextInt(tyhjä.getHeight - kuva.getHeight)
+    val dx = rand.nextInt(tyhjä.getWidth - kuva.getWidth(null))
+    val dy = rand.nextInt(tyhjä.getHeight - kuva.getHeight(null))
     tyhjä.createGraphics().drawImage(kuva, dx, dy, null)
     tyhjä
   }
