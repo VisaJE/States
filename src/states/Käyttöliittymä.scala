@@ -355,6 +355,7 @@ object Käyttöliittymä extends SimpleSwingApplication {
         ahkeruudet += spinneri
         paneeli.contents += sisäPaneeli
       }
+      asetaSlideri(0, 1000/sliderit.size)
     }
     else paneeli.contents += new TextField("Töitä ei löydy!", 20)
     paneeli
@@ -380,7 +381,6 @@ object Käyttöliittymä extends SimpleSwingApplication {
     var väliarvo = 0.0
     }
     sliderit += slider
-    sliderit.foreach(_.value = 1000/sliderit.size)
     slider
   }
   private def poistaSliderit() = sliderit.clear()
