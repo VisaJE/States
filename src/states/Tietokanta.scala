@@ -96,11 +96,18 @@ class Tietokanta(val kassa: Kassa, val kartta: Kartta, var populaatio: Int = 0) 
           val vapaat = vapaatPaikat(työt(i))
           val ehdotus = kokoLista(i)
           if (vapaat <= ehdotus) {
-            osuusLista(i) = (false, osuusLista(i)._2)
+            osuusLista(i) = (false, vapaat.toDouble/populaatio)
             kokoLista(i) = vapaat
+          } 
+        }
+        vapaana = populaatio - kokoLista.reduceLeft(_ + _)
+        if (vapaana == 1) {
+          val arvo = osuusLista.find(_._1 == true)
+          if (arvo != None) {
+            kokoLista(osuusLista.indexOf(arvo.get)) += 1
+            vapaana = populaatio - kokoLista.reduceLeft(_ + _)
           }
         }
-        vapaana = populaatio - kokoLista.reduceLeft(_ + _)   
       }
       for (i <- 0 until ahk.size) {
         teeTyöryhmä(kokoLista(i), ahk(i), työt(i))

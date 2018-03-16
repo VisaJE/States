@@ -26,9 +26,10 @@ class Tekoäly(tk: Tietokanta) extends Pelaaja(tk) {
       ostaKaikkea()
     }
     teeToiminta
-    
+
   }
   override def toString =  "Botti"
+  
   def voittoIlmoitus(voittaja: Option[Pelaaja], vuoro: Int) = {
     Käyttöliittymä.voittoIlmoitus(voittaja, vuoro)
   }
@@ -36,7 +37,7 @@ class Tekoäly(tk: Tietokanta) extends Pelaaja(tk) {
   
   private def teeToiminta = {
     val lista = tk.kassa.työLista
-    val toimeksianto = lista.map(_ => 1.0).scan(1.0)((a,b) => a / 1.5).tail
+    val toimeksianto = lista.map(_ => 1.0).scan(1.0)((a,b) => a / 1.6).tail
     val ahkeruus = lista.map(_ => 1.0)
     new Toiminta(toimeksianto, ahkeruus, tk)
   }

@@ -93,6 +93,7 @@ class Peli(ihmiset: Buffer[String], tekoälyt: Int) {
       vuoroNumero += 1
       val toiminnat: Buffer[Vuoro] = Buffer()
       pelaajat.foreach(toiminnat += _.vuoro)
+
       toiminnat.foreach(_.suorita())
       loikkaukset()
     }
@@ -131,8 +132,6 @@ class Peli(ihmiset: Buffer[String], tekoälyt: Int) {
   def aloita() = {
     while (!voitettu) {
       vuoroilija()
-      println(vuoroNumero)
-      pelaajat.foreach(x=> println("\n" + x.tk.kassa))
     }
   }
 }
@@ -146,10 +145,12 @@ trait Vuoro {
 
 
 case class Toiminta(työnjako: Vector[Double], ahkeruus: Vector[Double], tk: Tietokanta) extends Vuoro {
-  def suorita() = tk.vuoro(työnjako, ahkeruus) 
+  def suorita() = tk.vuoro(työnjako, ahkeruus)
+  override def toString = "Työnjako: " + työnjako + " Ahkeruus: " + ahkeruus + "Tk:" + tk
 }
 
 
 case class Ohita(tk: Tietokanta) extends Vuoro {
   def suorita = tk.vuoro()
+  override def toString = "Tk: " + tk
 }
