@@ -17,16 +17,16 @@ class Peli(ihmiset: Buffer[String], tekoälyt: Int) {
   // Määritetään laitokset ja niiden parametrit.
   // Peltoja on oltava sopivasti, jotta aloittajan etu ei olisi suuri.
   private val peltoteho = Asetus.asInt("peltoteho")
-  private val peltoja = satunnainen(3) + 3*(ihmiset.size+tekoälyt)
+  private val peltoja = satunnainen(ihmiset.size + tekoälyt) + 3*(ihmiset.size+tekoälyt)
   // Halpoja:
   for (i <- 1 to peltoja-peltoja/3) {
     val joku = satunnainen(50)
-    kartta.lisää(new Pelto(Vector(Raha(joku+80)), 20 + joku/2, peltoteho))
+    kartta.lisää(new Pelto(Vector(Raha(joku+80)), 15 + joku/2, peltoteho))
   }
   // Kalliimpia:
   for (i <- 1 to peltoja/3) {
     val joku = satunnainen(60)
-    kartta.lisää(new Pelto(Vector(Raha(2*(90+joku))), 40 + joku, peltoteho))
+    kartta.lisää(new Pelto(Vector(Raha(2*(90+joku))), 30 + joku, peltoteho))
   }
   
   
@@ -131,6 +131,8 @@ class Peli(ihmiset: Buffer[String], tekoälyt: Int) {
   def aloita() = {
     while (!voitettu) {
       vuoroilija()
+      println(vuoroNumero)
+      pelaajat.foreach(x=> println("\n" + x.tk.kassa))
     }
   }
 }

@@ -17,23 +17,24 @@ tvilja = 3
 
 Tuotteiden arvo:
 avilja = 1
-arauta = 2
-atyökalut = 20
+arauta = 1
+atyökalut = 15
 
 Ahkeruuden suhde tyytyväisyyteen:
-ahkeruuseksponentti = 1.6
+ahkeruuseksponentti = 2.0
+työtyytyväisyyskerroin = 4.0
 
 Tyytyväisyyden eron aiheuttamat loikat:
 loikkausindeksi = 0.05
 loikkauseksponentti = 2.0
 
-alkupopulaatio = 40
+alkupopulaatio = 30
 alkuraha = 220
 
 Laitosten toiminnan teho:
-peltoteho = 7
-kaivosteho = 4
-tehdasteho = 2
+peltoteho = 5
+kaivosteho = 2
+tehdasteho = 1
 
 Nollatyön tyytyväisyyskerroin:
 tknollatyö = -5
@@ -45,4 +46,4 @@ Tyytyväisyyden ja syntyvyyden suhde:
 syntyvyysindeksi = 1.3
 
 Yleinen resurssien ja tyytyväisyyden suhde:
-resurssityytyväisyys = 4.2
+resurssityytyväisyys = 3.0

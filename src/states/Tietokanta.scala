@@ -9,6 +9,7 @@ class Tietokanta(val kassa: Kassa, val kartta: Kartta, var populaatio: Int = 0) 
   private val tappoIndeksi = Asetus.as("tappoindeksi")
   private val resurssiTyytyväisyysKerroin = Asetus.as("resurssityytyväisyys")
   private val syntyvyysKerroin = Asetus.as("syntyvyysindeksi")
+  private val työTyytyväisyysKerroin = Asetus.as("työtyytyväisyyskerroin")
   var tyytyväisyys: Long = 0L
   
   
@@ -45,7 +46,7 @@ class Tietokanta(val kassa: Kassa, val kartta: Kartta, var populaatio: Int = 0) 
   // Muodostaa työryhmän.
   private def teeTyöryhmä(koko: Int, ahkeruus: Double, työ: Vector[Työ]) = {
     if (populaatio > 0) {
-    tyytyväisyys = ((new Työryhmä(ahkeruus, työ, koko, kassa)).tyytyväisyys*10.0 / populaatio + tyytyväisyys).toInt
+    tyytyväisyys = ((new Työryhmä(ahkeruus, työ, koko, kassa)).tyytyväisyys*työTyytyväisyysKerroin / populaatio + tyytyväisyys).toInt
     }
     
   }
