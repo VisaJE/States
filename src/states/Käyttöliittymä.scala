@@ -75,12 +75,13 @@ object Käyttöliittymä extends SimpleSwingApplication {
   val pelaajaNimi  = new TextArea() {
       editable = false
       focusable = false
+      font = new Font("Arial", 0, 30)
     }
   pelaajaNimi.text = "notanimi"
   
   // Kertoo pelaavan pelaajan nimen.
   val nimiPaneeli = new BoxPanel(Orientation.Vertical) {
-    maximumSize = new Dimension(600, 10)
+    maximumSize = new Dimension(440, 10)
   }
   nimiPaneeli.contents += pelaajaNimi
   
@@ -91,26 +92,31 @@ object Käyttöliittymä extends SimpleSwingApplication {
   
   def ajastin() = {
     val img = ImageIO.read(new File(nauhaPath))
-    val leveys = peliPaneeli.size.getWidth
-    val kuva = new ImageIcon(img.getScaledInstance((leveys*3).toInt+7,
+    val leveys = 295.0
+    val plev = 440
+    val kuva = new ImageIcon(img.getScaledInstance((leveys*3).toInt,
           30, java.awt.Image.SCALE_SMOOTH)) 
     val paneeli = new BoxPanel(Orientation.Vertical) {
       border = Swing.LineBorder(new Color(50,0,0), 1)
+      maximumSize = new Dimension(plev, 30)
+      minimumSize = new Dimension(plev, 30)
+      preferredSize = new Dimension(plev, 30)
     }
     val pohja = new JScrollPane(new JLabel(kuva),
         javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER, 
         javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER
         )
-    pohja.setPreferredSize(new Dimension(500, 30))
-    pohja.setMinimumSize(new Dimension(500, 30))
+    pohja.setPreferredSize(new Dimension(plev, 30))
+    pohja.setMaximumSize(new Dimension(plev, 30))
+    pohja.setMinimumSize(new Dimension(plev, 30))
     paneeli.contents += Component.wrap(pohja)
     ajastus(pohja)
     paneeli
   }
   
   
-  val maksipiste = 460
-  val minipiste = 3
+  val maksipiste = 442
+  val minipiste = 0
   val vuoronaika = Asetus.asInt("vuoronaika")
   val ajastetut: Buffer[ScheduledFuture[_]] = Buffer()
   def ajastus(s: JScrollPane) = {
@@ -141,7 +147,7 @@ object Käyttöliittymä extends SimpleSwingApplication {
     override def paintComponent(g: Graphics2D) = {
       g.drawImage(taustakuva,0,0, null)
     }
-    val width = 600
+    val width = 440
     val height = 200
     minimumSize = new Dimension(width, height)
     preferredSize = new Dimension(width, height)
@@ -211,13 +217,15 @@ object Käyttöliittymä extends SimpleSwingApplication {
     val paneeli = new BoxPanel(Orientation.Vertical)
     
     val pop = "Kansan populaatio: " + tk.populaatio +"."
-    paneeli.contents += new TextField(pop, 20) {
+    paneeli.contents += new TextField(pop) {
+      font = new Font("Arial", 0, 20)
       focusable = false
       editable = false
     }
     
     val tyyt = "Kansan keskimääräinen tyytyväisyys: " + tk.tyytyväisyys+"."
-    paneeli.contents += new TextField(tyyt, 20) {
+    paneeli.contents += new TextField(tyyt) {
+      font = new Font("Arial", 0, 20)
       focusable = false
       editable = false
     }
@@ -226,6 +234,7 @@ object Käyttöliittymä extends SimpleSwingApplication {
   
   
   private def alustaPääPaneeli() = {
+    peliIkkuna.resizable = true
     peliPaneeli.contents.clear()
     muutIkkunat.foreach(_.dispose())
     peliIkkuna.visible = true
