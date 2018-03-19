@@ -9,6 +9,7 @@ class Tietokanta(val kassa: Kassa, val kartta: Kartta, var populaatio: Int = 0) 
   private val tappoIndeksi = Asetus.as("tappoindeksi")
   private val resurssiTyytyväisyysKerroin = Asetus.as("resurssityytyväisyys")
   private val syntyvyysKerroin = Asetus.as("syntyvyysindeksi")
+  private val työTyytyväisyysKerroin = Asetus.as("työtyytyväisyyskerroin")
   var tyytyväisyys: Long = 0L
   
   
@@ -45,7 +46,7 @@ class Tietokanta(val kassa: Kassa, val kartta: Kartta, var populaatio: Int = 0) 
   // Muodostaa työryhmän.
   private def teeTyöryhmä(koko: Int, ahkeruus: Double, työ: Vector[Työ]) = {
     if (populaatio > 0) {
-    tyytyväisyys = ((new Työryhmä(ahkeruus, työ, koko, kassa)).tyytyväisyys*10.0 / populaatio + tyytyväisyys).toInt
+    tyytyväisyys = ((new Työryhmä(ahkeruus, työ, koko, kassa)).tyytyväisyys*työTyytyväisyysKerroin / populaatio + tyytyväisyys).toInt
     }
     
   }
@@ -95,11 +96,18 @@ class Tietokanta(val kassa: Kassa, val kartta: Kartta, var populaatio: Int = 0) 
           val vapaat = vapaatPaikat(työt(i))
           val ehdotus = kokoLista(i)
           if (vapaat <= ehdotus) {
-            osuusLista(i) = (false, osuusLista(i)._2)
+            osuusLista(i) = (false, vapaat.toDouble/populaatio)
             kokoLista(i) = vapaat
+          } 
+        }
+        vapaana = populaatio - kokoLista.reduceLeft(_ + _)
+        if (vapaana == 1) {
+          val arvo = osuusLista.find(_._1 == true)
+          if (arvo != None) {
+            kokoLista(osuusLista.indexOf(arvo.get)) += 1
+            vapaana = populaatio - kokoLista.reduceLeft(_ + _)
           }
         }
-        vapaana = populaatio - kokoLista.reduceLeft(_ + _)   
       }
       for (i <- 0 until ahk.size) {
         teeTyöryhmä(kokoLista(i), ahk(i), työt(i))
