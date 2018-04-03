@@ -178,7 +178,7 @@ class Työkalut(m: Int = 0) extends Tuote(Asetus.asInt("atyökalut"), m) {
   
   def copy(m: Int) = new Työkalut(m)
   
-  override def toString = "Kaikenkaltaisia työkaluja " + määrä + " kappaletta."
+  override def toString = "Työkaluja " + määrä + " kappaletta."
 }
 
 

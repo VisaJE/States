@@ -34,7 +34,7 @@ class Peli(ihmiset: Buffer[String], tekoälyt: Int) {
   private val kaivoksia = satunnainen(5) + 1*(ihmiset.size+tekoälyt)
   for (i <- 1 to kaivoksia) {
     val joku = satunnainen(200)
-    kartta.lisää(new Kaivos(Vector(Raha(joku+70)), 20 + joku/2, kaivosteho))
+    kartta.lisää(new Kaivos(Vector(Raha(joku+70)), 20 + (joku/2.3).toInt, kaivosteho))
   }
   
   
