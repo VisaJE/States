@@ -1,0 +1,55 @@
+[0m[[0m[0mdebug[0m] [0m[0m:: resolving dependencies :: org.eemil#states$sources_javadoc;0.1.0[0m
+[0m[[0m[0mdebug[0m] [0m[0m	confs: [compile, runtime, test, provided, optional, compile-internal, runtime-internal, test-internal, plugin, pom, scala-tool][0m
+[0m[[0m[0mdebug[0m] [0m[0m	validate = true[0m
+[0m[[0m[0mdebug[0m] [0m[0m	refresh = false[0m
+[0m[[0m[0mdebug[0m] [0m[0mresolving dependencies for configuration 'compile'[0m
+[0m[[0m[0mdebug[0m] [0m[0m== resolving dependencies for org.eemil#states$sources_javadoc;0.1.0 [compile][0m
+[0m[[0m[0mdebug[0m] [0m[0mresolving dependencies for configuration 'runtime'[0m
+[0m[[0m[0mdebug[0m] [0m[0m== resolving dependencies for org.eemil#states$sources_javadoc;0.1.0 [runtime][0m
+[0m[[0m[0mdebug[0m] [0m[0m== resolving dependencies for org.eemil#states$sources_javadoc;0.1.0 [compile][0m
+[0m[[0m[0mdebug[0m] [0m[0mresolving dependencies for configuration 'test'[0m
+[0m[[0m[0mdebug[0m] [0m[0m== resolving dependencies for org.eemil#states$sources_javadoc;0.1.0 [test][0m
+[0m[[0m[0mdebug[0m] [0m[0m== resolving dependencies for org.eemil#states$sources_javadoc;0.1.0 [runtime][0m
+[0m[[0m[0mdebug[0m] [0m[0m== resolving dependencies for org.eemil#states$sources_javadoc;0.1.0 [compile][0m
+[0m[[0m[0mdebug[0m] [0m[0mresolving dependencies for configuration 'provided'[0m
+[0m[[0m[0mdebug[0m] [0m[0m== resolving dependencies for org.eemil#states$sources_javadoc;0.1.0 [provided][0m
+[0m[[0m[0mdebug[0m] [0m[0mresolving dependencies for configuration 'optional'[0m
+[0m[[0m[0mdebug[0m] [0m[0m== resolving dependencies for org.eemil#states$sources_javadoc;0.1.0 [optional][0m
+[0m[[0m[0mdebug[0m] [0m[0mresolving dependencies for configuration 'compile-internal'[0m
+[0m[[0m[0mdebug[0m] [0m[0m== resolving dependencies for org.eemil#states$sources_javadoc;0.1.0 [compile-internal][0m
+[0m[[0m[0mdebug[0m] [0m[0m== resolving dependencies for org.eemil#states$sources_javadoc;0.1.0 [compile][0m
+[0m[[0m[0mdebug[0m] [0m[0m== resolving dependencies for org.eemil#states$sources_javadoc;0.1.0 [optional][0m
+[0m[[0m[0mdebug[0m] [0m[0m== resolving dependencies for org.eemil#states$sources_javadoc;0.1.0 [provided][0m
+[0m[[0m[0mdebug[0m] [0m[0mresolving dependencies for configuration 'runtime-internal'[0m
+[0m[[0m[0mdebug[0m] [0m[0m== resolving dependencies for org.eemil#states$sources_javadoc;0.1.0 [runtime-internal][0m
+[0m[[0m[0mdebug[0m] [0m[0m== resolving dependencies for org.eemil#states$sources_javadoc;0.1.0 [runtime][0m
+[0m[[0m[0mdebug[0m] [0m[0m== resolving dependencies for org.eemil#states$sources_javadoc;0.1.0 [compile][0m
+[0m[[0m[0mdebug[0m] [0m[0m== resolving dependencies for org.eemil#states$sources_javadoc;0.1.0 [optional][0m
+[0m[[0m[0mdebug[0m] [0m[0mresolving dependencies for configuration 'test-internal'[0m
+[0m[[0m[0mdebug[0m] [0m[0m== resolving dependencies for org.eemil#states$sources_javadoc;0.1.0 [test-internal][0m
+[0m[[0m[0mdebug[0m] [0m[0m== resolving dependencies for org.eemil#states$sources_javadoc;0.1.0 [test][0m
+[0m[[0m[0mdebug[0m] [0m[0m== resolving dependencies for org.eemil#states$sources_javadoc;0.1.0 [runtime][0m
+[0m[[0m[0mdebug[0m] [0m[0m== resolving dependencies for org.eemil#states$sources_javadoc;0.1.0 [compile][0m
+[0m[[0m[0mdebug[0m] [0m[0m== resolving dependencies for org.eemil#states$sources_javadoc;0.1.0 [optional][0m
+[0m[[0m[0mdebug[0m] [0m[0m== resolving dependencies for org.eemil#states$sources_javadoc;0.1.0 [provided][0m
+[0m[[0m[0mdebug[0m] [0m[0mresolving dependencies for configuration 'plugin'[0m
+[0m[[0m[0mdebug[0m] [0m[0m== resolving dependencies for org.eemil#states$sources_javadoc;0.1.0 [plugin][0m
+[0m[[0m[0mdebug[0m] [0m[0mresolving dependencies for configuration 'pom'[0m
+[0m[[0m[0mdebug[0m] [0m[0m== resolving dependencies for org.eemil#states$sources_javadoc;0.1.0 [pom][0m
+[0m[[0m[0mdebug[0m] [0m[0mresolving dependencies for configuration 'scala-tool'[0m
+[0m[[0m[0mdebug[0m] [0m[0m== resolving dependencies for org.eemil#states$sources_javadoc;0.1.0 [scala-tool][0m
+[0m[[0m[0mdebug[0m] [0m[0m	resolved ivy file produced in cache[0m
+[0m[[0m[0mdebug[0m] [0m[0m:: downloading artifacts ::[0m
+[0m[[0m[0mdebug[0m] [0m[0m:: resolution report :: resolve 8ms :: artifacts dl 1ms[0m
+[0m[[0m[0mdebug[0m] [0m[0m	report for org.eemil#states$sources_javadoc;0.1.0 compile produced in /home/visakoe1/ohjelmointi/States/target/scala-2.12/resolution-cache/reports/org.eemil-states$sources_javadoc-compile.xml[0m
+[0m[[0m[0mdebug[0m] [0m[0m	report for org.eemil#states$sources_javadoc;0.1.0 runtime produced in /home/visakoe1/ohjelmointi/States/target/scala-2.12/resolution-cache/reports/org.eemil-states$sources_javadoc-runtime.xml[0m
+[0m[[0m[0mdebug[0m] [0m[0m	report for org.eemil#states$sources_javadoc;0.1.0 test produced in /home/visakoe1/ohjelmointi/States/target/scala-2.12/resolution-cache/reports/org.eemil-states$sources_javadoc-test.xml[0m
+[0m[[0m[0mdebug[0m] [0m[0m	report for org.eemil#states$sources_javadoc;0.1.0 provided produced in /home/visakoe1/ohjelmointi/States/target/scala-2.12/resolution-cache/reports/org.eemil-states$sources_javadoc-provided.xml[0m
+[0m[[0m[0mdebug[0m] [0m[0m	report for org.eemil#states$sources_javadoc;0.1.0 optional produced in /home/visakoe1/ohjelmointi/States/target/scala-2.12/resolution-cache/reports/org.eemil-states$sources_javadoc-optional.xml[0m
+[0m[[0m[0mdebug[0m] [0m[0m	report for org.eemil#states$sources_javadoc;0.1.0 compile-internal produced in /home/visakoe1/ohjelmointi/States/target/scala-2.12/resolution-cache/reports/org.eemil-states$sources_javadoc-compile-internal.xml[0m
+[0m[[0m[0mdebug[0m] [0m[0m	report for org.eemil#states$sources_javadoc;0.1.0 runtime-internal produced in /home/visakoe1/ohjelmointi/States/target/scala-2.12/resolution-cache/reports/org.eemil-states$sources_javadoc-runtime-internal.xml[0m
+[0m[[0m[0mdebug[0m] [0m[0m	report for org.eemil#states$sources_javadoc;0.1.0 test-internal produced in /home/visakoe1/ohjelmointi/States/target/scala-2.12/resolution-cache/reports/org.eemil-states$sources_javadoc-test-internal.xml[0m
+[0m[[0m[0mdebug[0m] [0m[0m	report for org.eemil#states$sources_javadoc;0.1.0 plugin produced in /home/visakoe1/ohjelmointi/States/target/scala-2.12/resolution-cache/reports/org.eemil-states$sources_javadoc-plugin.xml[0m
+[0m[[0m[0mdebug[0m] [0m[0m	report for org.eemil#states$sources_javadoc;0.1.0 pom produced in /home/visakoe1/ohjelmointi/States/target/scala-2.12/resolution-cache/reports/org.eemil-states$sources_javadoc-pom.xml[0m
+[0m[[0m[0mdebug[0m] [0m[0m	report for org.eemil#states$sources_javadoc;0.1.0 scala-tool produced in /home/visakoe1/ohjelmointi/States/target/scala-2.12/resolution-cache/reports/org.eemil-states$sources_javadoc-scala-tool.xml[0m
+[0m[[0m[0mdebug[0m] [0m[0m	resolve done (8ms resolve - 1ms download)[0m

@@ -4,3 +4,12 @@ about
 exit
 compile
 run
+compile
+eval print("12c40078-ac7e-4a98-9398-3e6b4a168efb\n")
+ls
+ensimeConfig
+exit
+ensimeConfig
+exit
+ensimeConfig
+exit

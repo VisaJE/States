@@ -1,25 +1,16 @@
   package states
 
-import scala.swing._
-import scala.swing.event._
-import scala.swing.BorderPanel.Position._
-import javax.swing.ImageIcon
-import javax.swing.SpinnerNumberModel
-import javax.swing.JSpinner
-import javax.swing.JLabel
-import javax.swing.Timer
-import javax.swing.JTextField
-import javax.swing.JScrollPane
-import javax.swing.JLayeredPane
-import javax.swing.JPanel
-import javax.swing.JViewport
-import scala.collection.mutable.Buffer
-import scala.concurrent.Future
-import javax.swing.SwingUtilities
 import java.awt.Graphics2D
 import java.io.File
-import javax.imageio.ImageIO
 import java.util.concurrent._
+
+import scala.collection.mutable.Buffer
+import scala.swing._
+import scala.swing.BorderPanel.Position._
+import scala.swing.event._
+
+import javax.imageio.ImageIO
+import javax.swing.{ImageIcon, JLabel, JScrollPane, JSpinner, JViewport, SpinnerNumberModel, SwingUtilities}
 
 
 object Käyttöliittymä extends SimpleSwingApplication {
@@ -69,9 +60,7 @@ object Käyttöliittymä extends SimpleSwingApplication {
       toimi = Some(Toiminta(osuudet, ahk, tk))
     }
   }
-
-  
-  
+ 
   val pelaajaNimi  = new TextArea() {
       editable = false
       focusable = false
