@@ -1,16 +1,16 @@
 package states
 
+import java.awt.Image
+import java.awt.event._
+import java.awt.image.BufferedImage
+import java.io.File
+
 import scala.math._
 import scala.swing._
-import java.awt.event._
-import javax.swing.ImageIcon
-import javax.imageio.ImageIO
-import java.io.File
-import javax.swing._
-import java.awt.Image
-import java.awt.image.BufferedImage
 import scala.util.Random
-import java.awt.GraphicsConfiguration._
+
+import javax.imageio.ImageIO
+import javax.swing._
 
 
 class Kartoittaja(k: Kartta, kokoKerroin: Int = 1) {
