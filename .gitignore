@@ -1,4 +1,5 @@
 /bin/
 pelikartta.png
 .ensime*
-target**
+target
+project

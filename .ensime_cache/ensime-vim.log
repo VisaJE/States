@@ -1,5 +1,0 @@
-INFO     <2018-11-05 10:50:58,477> (client.py:83) - Initializing project - /home/visakoe1/ohjelmointi/States
-WARNING  <2018-11-05 10:51:00,939> (protocol.py:65) - Response has not been handled: 
-{'implementation': {'name': 'ENSIME'},
- 'typehint': 'ConnectionInfo',
- 'version': '1.9.6'}
